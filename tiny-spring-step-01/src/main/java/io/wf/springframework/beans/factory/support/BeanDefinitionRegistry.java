@@ -1,6 +1,5 @@
 package io.wf.springframework.beans.factory.support;
 
-import io.wf.springframework.beans.BeansException;
 import io.wf.springframework.beans.factory.config.BeanDefinition;
 
 /**
