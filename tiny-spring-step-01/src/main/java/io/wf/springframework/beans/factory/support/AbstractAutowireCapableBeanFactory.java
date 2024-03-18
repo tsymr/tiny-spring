@@ -23,7 +23,7 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
                  NoSuchMethodException e) {
             throw new BeansException("Instantiation of bean failed", e);
         }
-        addSingleton(beanName, beanDefinition);
+        addSingleton(beanName, bean);
         return bean;
     }
 
