@@ -4,10 +4,13 @@ import cn.hutool.core.bean.BeanUtil;
 import io.wf.springframework.beans.BeansException;
 import io.wf.springframework.beans.factory.PropertyValue;
 import io.wf.springframework.beans.factory.PropertyValues;
+import io.wf.springframework.beans.factory.config.AutowireCapableBeanFactory;
 import io.wf.springframework.beans.factory.config.BeanDefinition;
+import io.wf.springframework.beans.factory.config.BeanPostProcessor;
 import io.wf.springframework.beans.factory.config.BeanReference;
 
 import java.lang.reflect.Constructor;
+import java.util.List;
 
 /**
  * AbstractAutowireCapableBeanFactory
@@ -16,7 +19,7 @@ import java.lang.reflect.Constructor;
  * @version 1.0.0
  * @date 2024/3/25 9:54 AM
  */
-public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFactory {
+public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFactory implements AutowireCapableBeanFactory {
 
     private InstantiationStrategy instantiationStrategy = new CglibSubClassInstantiationStrategy();
 
@@ -26,6 +29,7 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
         try {
             bean = createBeanInstance(beanName, beanDefinition, args);
             applyBeanPropertyValues(beanName, beanDefinition, bean);
+            bean = initializeBean(beanName, bean, beanDefinition);
         } catch (Exception e) {
             throw new BeansException("Instantiation of bean failed", e);
         }
@@ -46,13 +50,13 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
         return getInstantiationStrategy().instantiate(beanName, beanDefinition, ctor, args);
     }
 
-    private void applyBeanPropertyValues(String beanName, BeanDefinition beanDefinition, Object bean){
+    private void applyBeanPropertyValues(String beanName, BeanDefinition beanDefinition, Object bean) {
         try {
-            PropertyValues propertyValues =  beanDefinition.getPropertyValues();
+            PropertyValues propertyValues = beanDefinition.getPropertyValues();
             for (PropertyValue propertyValue : propertyValues.getPropertyValues()) {
                 String name = propertyValue.getName();
                 Object value = propertyValue.getValue();
-                if (value instanceof BeanReference beanReference){
+                if (value instanceof BeanReference beanReference) {
                     value = getBean(beanReference.getBeanName());
                 }
                 BeanUtil.setFieldValue(bean, name, value);
@@ -68,5 +72,45 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 
     public void setInstantiationStrategy(InstantiationStrategy instantiationStrategy) {
         this.instantiationStrategy = instantiationStrategy;
+    }
+
+    private Object initializeBean(String beanName, Object bean, BeanDefinition beanDefinition) {
+        Object wrappedBean = applyBeanPostProcessorsBeforeInitialization(bean, beanName);
+
+        invokeInitMethods(beanName, wrappedBean, beanDefinition);
+
+        wrappedBean = applyBeanPostProcessorsAfterInitialization(wrappedBean, beanName);
+        return wrappedBean;
+    }
+
+    private void invokeInitMethods(String beanName, Object wrappedBean, BeanDefinition beanDefinition) {
+
+    }
+
+    @Override
+    public Object applyBeanPostProcessorsBeforeInitialization(Object existingBean, String beanName) throws BeansException {
+        Object result = existingBean;
+        List<BeanPostProcessor> beanPostProcessors = getBeanPostProcessors();
+        for (BeanPostProcessor beanPostProcessor : beanPostProcessors) {
+            Object current = beanPostProcessor.postProcessBeforeInitialization(result, beanName);
+            if (current == null) {
+                return result;
+            }
+            result = current;
+        }
+        return result;
+    }
+
+    @Override
+    public Object applyBeanPostProcessorsAfterInitialization(Object existingBean, String beanName) throws BeansException {
+        Object result = existingBean;
+        for (BeanPostProcessor beanPostProcessor : getBeanPostProcessors()) {
+            Object current = beanPostProcessor.postProcessAfterInitialization(result, beanName);
+            if (null == current) {
+                return result;
+            }
+            result = current;
+        }
+        return result;
     }
 }

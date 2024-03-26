@@ -10,5 +10,7 @@
         <property name="location" value="滨江"/>
     </bean>
 
+    <bean class="io.wf.springframework.test.common.MyBeanFactoryPostProcessor"/>
+    <bean class="io.wf.springframework.test.common.MyBeanPostProcessor"/>
 
 </beans>

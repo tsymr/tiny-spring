@@ -8,6 +8,8 @@ import io.wf.springframework.test.bean.UserDao;
 import io.wf.springframework.test.bean.UserService;
 import io.wf.springframework.beans.factory.config.BeanDefinition;
 import io.wf.springframework.beans.factory.support.DefaultListableBeanFactory;
+import io.wf.springframework.test.common.MyBeanFactoryPostProcessor;
+import io.wf.springframework.test.common.MyBeanPostProcessor;
 import org.junit.Test;
 
 public class ApiTest {
@@ -45,7 +47,28 @@ public class ApiTest {
         xmlBeanDefinitionReader.loadBeanDefinitions("classpath:spring.xml");
         
         UserService userService = (UserService) beanFactory.getBean("userService");
-        userService.queryUserInfo();
-
+        var result=  userService.queryUserInfo();
+        System.out.println(result);
     }
+
+    @Test
+    public void test_bean_post_processor(){
+        DefaultListableBeanFactory beanFactory = new DefaultListableBeanFactory();
+
+        XmlBeanDefinitionReader xmlBeanDefinitionReader = new XmlBeanDefinitionReader(beanFactory);
+        xmlBeanDefinitionReader.loadBeanDefinitions("classpath:spring2.xml");
+
+        MyBeanFactoryPostProcessor beanFactoryPostProcessor = new MyBeanFactoryPostProcessor();
+        beanFactoryPostProcessor.postProcessBeanFactory(beanFactory);
+
+        MyBeanPostProcessor beanPostProcessor = new MyBeanPostProcessor();
+        beanFactory.addBeanPostProcessor(beanPostProcessor);
+
+        UserService userService = beanFactory.getBean("userService", UserService.class);
+        var result=  userService.queryUserInfo();
+        System.out.println(result);
+    }
+
+
+
 }
