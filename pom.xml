@@ -15,6 +15,7 @@
         <module>tiny-spring-step-04</module>
         <module>tiny-spring-step-05</module>
         <module>tiny-spring-step-06</module>
+        <module>tiny-spring-step-07</module>
     </modules>
 
     <properties>
