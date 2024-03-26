@@ -4,6 +4,7 @@ import io.wf.springframework.beans.factory.PropertyValue;
 import io.wf.springframework.beans.factory.PropertyValues;
 import io.wf.springframework.beans.factory.config.BeanReference;
 import io.wf.springframework.beans.factory.xml.XmlBeanDefinitionReader;
+import io.wf.springframework.context.support.ClassPathXmlApplicationContext;
 import io.wf.springframework.test.bean.UserDao;
 import io.wf.springframework.test.bean.UserService;
 import io.wf.springframework.beans.factory.config.BeanDefinition;
@@ -70,5 +71,12 @@ public class ApiTest {
     }
 
 
+    @Test
+    public void test_application_context(){
+        ClassPathXmlApplicationContext applicationContext = new ClassPathXmlApplicationContext("classpath:spring2.xml");
 
+        UserService userService = applicationContext.getBean("userService", UserService.class);
+        String result = userService.queryUserInfo();
+        System.out.println("测试结果：" + result);
+    }
 }
