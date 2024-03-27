@@ -17,6 +17,8 @@ public class BeanDefinition {
 
     private Class beanClass;
     private PropertyValues propertyValues;
+    private String initMethodName;
+    private String destroyMethodName;
 
     public BeanDefinition(Class beanClass) {
         this.beanClass = beanClass;

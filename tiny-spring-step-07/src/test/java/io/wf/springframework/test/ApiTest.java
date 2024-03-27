@@ -10,15 +10,19 @@ import io.wf.springframework.core.io.DefaultResourceLoader;
 import io.wf.springframework.core.io.Resource;
 import io.wf.springframework.core.io.ResourceLoader;
 import io.wf.springframework.test.bean.UserDao;
+import io.wf.springframework.test.bean.UserDaoV2;
 import io.wf.springframework.test.bean.UserService;
 import io.wf.springframework.beans.factory.config.BeanDefinition;
 import io.wf.springframework.beans.factory.support.DefaultListableBeanFactory;
+import io.wf.springframework.test.bean.UserServiceV2;
 import io.wf.springframework.test.common.MyBeanFactoryPostProcessor;
 import io.wf.springframework.test.common.MyBeanPostProcessor;
 import org.junit.Test;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 
 public class ApiTest {
 
@@ -94,4 +98,17 @@ public class ApiTest {
         String result = userService.queryUserInfo();
         System.out.println("测试结果：" + result);
     }
+
+    @Test
+    public void test_inti_destroy_method() {
+        // 1.初始化 BeanFactory
+        ClassPathXmlApplicationContext applicationContext = new ClassPathXmlApplicationContext("classpath:spring3.xml");
+        applicationContext.registerShutdownHook();
+
+        // 2. 获取Bean对象调用方法
+        UserServiceV2 userService = applicationContext.getBean("userService", UserServiceV2.class);
+        String result = userService.queryUserInfo();
+        System.out.println("测试结果：" + result);
+    }
+
 }
