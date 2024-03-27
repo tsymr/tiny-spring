@@ -11,7 +11,7 @@ import io.wf.springframework.beans.factory.BeanFactory;
  */
 public interface AutowireCapableBeanFactory  extends BeanFactory {
 
-    void applyBeanPostProcessorsBeforeInitialization(Object existBean, String beanName);
+    Object applyBeanPostProcessorsBeforeInitialization(Object existBean, String beanName);
 
-    void applyBeanPostProcessorsAfterInitialization(Object existBean, String beanName);
+    Object applyBeanPostProcessorsAfterInitialization(Object existBean, String beanName);
 }
