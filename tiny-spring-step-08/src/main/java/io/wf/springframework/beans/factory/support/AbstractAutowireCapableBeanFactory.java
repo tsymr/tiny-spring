@@ -3,10 +3,7 @@ package io.wf.springframework.beans.factory.support;
 import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.util.StrUtil;
 import io.wf.springframework.beans.BeansException;
-import io.wf.springframework.beans.factory.DisposableBean;
-import io.wf.springframework.beans.factory.InitializingBean;
-import io.wf.springframework.beans.factory.PropertyValue;
-import io.wf.springframework.beans.factory.PropertyValues;
+import io.wf.springframework.beans.factory.*;
 import io.wf.springframework.beans.factory.config.AutowireCapableBeanFactory;
 import io.wf.springframework.beans.factory.config.BeanDefinition;
 import io.wf.springframework.beans.factory.config.BeanPostProcessor;
@@ -108,6 +105,19 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
      * @return
      */
     private Object initializeBean(String beanName, Object bean, BeanDefinition beanDefinition) {
+
+        if (bean instanceof Aware){
+            if (bean instanceof BeanFactoryAware beanFactoryAware){
+                beanFactoryAware.setBeanFactory(this);
+            }
+            if (bean instanceof BeanClassLoaderAware beanClassLoaderAware){
+                beanClassLoaderAware.setBeanClassLoader(getBeanClassLoader());
+            }
+            if (bean instanceof BeanNameAware beanNameAware){
+                beanNameAware.setBeanName(beanName);
+            }
+        }
+
         Object wrappedBean = applyBeanPostProcessorsBeforeInitialization(bean, beanName);
         try {
             invokeInitMethods(beanName, wrappedBean, beanDefinition);

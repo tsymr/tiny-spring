@@ -19,14 +19,17 @@ public abstract class AbstractApplicationContext implements ConfigurableApplicat
 
     @Override
     public void refresh() throws BeansException {
+        // 1.创建BeanFactory并加载BeanDefinition
         refreshBeanFactory();
-
+        // 2.获取BeanFactory
         ConfigurableListableBeanFactory beanFactory = getBeanFactory();
-
+        // 3. 添加 ApplicationContextAwareProcessor，让继承自 ApplicationContextAware 的 Bean 对象都能感知所属的 ApplicationContext
+        beanFactory.addBeanPostProcessor(new ApplicationContextAwareProcessor(this));
+        // 4.执行BeanFactoryPostProcessor修改BeanDefinition
         invokeBeanFactoryPostProcessors(beanFactory);
-
+        // 5.提前注册BeanPostProcessor
         registerBeanPostProcessors(beanFactory);
-
+        // 6.提前实例化单例Bean
         beanFactory.preInstantiateSingletons();
     }
 

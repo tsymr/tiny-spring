@@ -14,6 +14,7 @@ import io.wf.springframework.test.bean.UserService;
 import io.wf.springframework.beans.factory.config.BeanDefinition;
 import io.wf.springframework.beans.factory.support.DefaultListableBeanFactory;
 import io.wf.springframework.test.bean.UserServiceV2;
+import io.wf.springframework.test.bean.aware.AwareUserService;
 import io.wf.springframework.test.common.MyBeanFactoryPostProcessor;
 import io.wf.springframework.test.common.MyBeanPostProcessor;
 import org.junit.Test;
@@ -133,4 +134,17 @@ public class ApiTest {
         System.out.println("测试结果：" + result);
     }
 
+    @Test
+    public void test_aware() {
+        // 1.初始化 BeanFactory
+        ClassPathXmlApplicationContext applicationContext = new ClassPathXmlApplicationContext("classpath:aware_spring.xml");
+        applicationContext.registerShutdownHook();
+
+        // 2. 获取Bean对象调用方法
+        AwareUserService userService = applicationContext.getBean("awareUserService", AwareUserService.class);
+        String result = userService.queryUserInfo();
+        System.out.println("测试结果：" + result);
+        System.out.println("ApplicationContextAware："+userService.getApplicationContext());
+        System.out.println("BeanFactoryAware："+userService.getBeanFactory());
+    }
 }
