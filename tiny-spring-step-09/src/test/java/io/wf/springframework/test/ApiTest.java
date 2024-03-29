@@ -163,4 +163,15 @@ public class ApiTest {
         System.out.println(userService01);
         System.out.println(userService02);
     }
+
+    @Test
+    public void test_factory_bean() {
+        // 1.初始化 BeanFactory
+        ClassPathXmlApplicationContext applicationContext = new ClassPathXmlApplicationContext("classpath:factorybean.xml");
+        applicationContext.registerShutdownHook();
+
+        // 2. 调用代理方法
+        FactoryBeanUserService userService = applicationContext.getBean("userService", FactoryBeanUserService.class);
+        System.out.println("测试结果：" + userService.queryUserInfo());
+    }
 }
