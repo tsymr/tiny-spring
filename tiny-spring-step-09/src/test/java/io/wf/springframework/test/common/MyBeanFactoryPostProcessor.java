@@ -20,7 +20,7 @@ import java.util.stream.Collectors;
 public class MyBeanFactoryPostProcessor implements BeanFactoryPostProcessor {
     @Override
     public void postProcessBeanFactory(ConfigurableListableBeanFactory beanFactory) throws BeansException {
-        if (Arrays.stream(beanFactory.getBeanDefinitionNames()).collect(Collectors.toList()).contains("userServiceV2")) {
+        if (Arrays.asList(beanFactory.getBeanDefinitionNames()).contains("userServiceV2")) {
             BeanDefinition beanDefinition = beanFactory.getBeanDefinition("userServiceV2");
             PropertyValues propertyValues =  beanDefinition.getPropertyValues();
             propertyValues.addPropertyValue(new PropertyValue("company", "改为匠人网络"));
