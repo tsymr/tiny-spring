@@ -19,7 +19,6 @@
         <module>tiny-spring-step-08</module>
         <module>tiny-spring-step-09</module>
         <module>tiny-spring-template</module>
-        <module>test</module>
     </modules>
 
     <properties>
