@@ -15,6 +15,7 @@ import io.wf.springframework.beans.factory.config.BeanDefinition;
 import io.wf.springframework.beans.factory.support.DefaultListableBeanFactory;
 import io.wf.springframework.test.bean.UserServiceV2;
 import io.wf.springframework.test.bean.aware.AwareUserService;
+import io.wf.springframework.test.bean.factorybean.FactoryBeanUserService;
 import io.wf.springframework.test.common.MyBeanFactoryPostProcessor;
 import io.wf.springframework.test.common.MyBeanPostProcessor;
 import org.junit.Test;
@@ -67,7 +68,7 @@ public class ApiTest {
         xmlBeanDefinitionReader.loadBeanDefinitions("classpath:spring.xml");
 
         UserService userService = (UserService) beanFactory.getBean("userService");
-        var result = userService.queryUserInfo();
+        String result = userService.queryUserInfo();
         System.out.println(result);
     }
 
@@ -85,7 +86,7 @@ public class ApiTest {
         beanFactory.addBeanPostProcessor(beanPostProcessor);
 
         UserService userService = beanFactory.getBean("userService", UserService.class);
-        var result = userService.queryUserInfo();
+        String result = userService.queryUserInfo();
         System.out.println(result);
     }
 
@@ -146,5 +147,20 @@ public class ApiTest {
         System.out.println("测试结果：" + result);
         System.out.println("ApplicationContextAware："+userService.getApplicationContext());
         System.out.println("BeanFactoryAware："+userService.getBeanFactory());
+    }
+
+    @Test
+    public void test_prototype() {
+        // 1.初始化 BeanFactory
+        ClassPathXmlApplicationContext applicationContext = new ClassPathXmlApplicationContext("classpath:factorybean.xml");
+        applicationContext.registerShutdownHook();
+
+        // 2. 获取Bean对象调用方法
+        FactoryBeanUserService userService01 = applicationContext.getBean("userService", FactoryBeanUserService.class);
+        FactoryBeanUserService userService02 = applicationContext.getBean("userService", FactoryBeanUserService.class);
+
+        // 3. 配置 scope="prototype/singleton"
+        System.out.println(userService01);
+        System.out.println(userService02);
     }
 }

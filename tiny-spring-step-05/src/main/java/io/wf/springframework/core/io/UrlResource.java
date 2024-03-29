@@ -28,8 +28,8 @@ public class UrlResource implements Resource {
         try {
             return conn.getInputStream();
         } catch (IOException e) {
-            if (conn instanceof HttpURLConnection httpURLConnection) {
-                httpURLConnection.disconnect();
+            if (conn instanceof HttpURLConnection) {
+                ((HttpURLConnection) conn).disconnect();
             }
             throw new RuntimeException(e);
         }

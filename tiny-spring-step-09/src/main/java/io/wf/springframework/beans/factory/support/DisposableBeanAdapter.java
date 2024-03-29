@@ -14,7 +14,7 @@ import java.lang.reflect.Method;
  * @version 1.0.0
  * @date 2024/3/28 3:36 PM
  */
-public class DisposableBeanAdapter  implements DisposableBean {
+public class DisposableBeanAdapter implements DisposableBean {
 
     private String beanName;
     private Object bean;
@@ -28,13 +28,14 @@ public class DisposableBeanAdapter  implements DisposableBean {
 
     @Override
     public void destroy() throws Exception {
-        if (bean instanceof DisposableBean disposableBean){
+        if (bean instanceof DisposableBean) {
+            DisposableBean disposableBean = (DisposableBean) bean;
             disposableBean.destroy();
         }
-        if (StrUtil.isNotEmpty(destroyMethodName) && !(bean instanceof DisposableBean)){
+        if (StrUtil.isNotEmpty(destroyMethodName) && !(bean instanceof DisposableBean)) {
             Method method = bean.getClass().getMethod(destroyMethodName);
-            if (null == method){
-                throw  new BeansException("Could not find a destroy method named [" + destroyMethodName +"] on bean with name [" + beanName + "]");
+            if (null == method) {
+                throw new BeansException("Could not find a destroy method named [" + destroyMethodName + "] on bean with name [" + beanName + "]");
             }
             method.invoke(bean);
         }

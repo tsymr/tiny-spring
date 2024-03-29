@@ -28,13 +28,13 @@ public class DisposableBeanAdapter implements DisposableBean {
 
     @Override
     public void destroy() throws Exception {
-        if (bean instanceof DisposableBean disposableBean) {
-            disposableBean.destroy();
+        if (bean instanceof DisposableBean) {
+            ((DisposableBean) bean).destroy();
         }
 
         if (StrUtil.isNotEmpty(destroyMethodName) && !(bean instanceof DisposableBean)) {
             Method destroyMethod = bean.getClass().getMethod(destroyMethodName);
-            if (null == destroyMethod){
+            if (null == destroyMethod) {
                 throw new BeansException("Could not find a destroy method named '" + destroyMethodName + "' on bean with name '" + beanName + "'");
             }
             destroyMethod.invoke(bean);

@@ -86,7 +86,9 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
             for (PropertyValue propertyValue : propertyValues.getPropertyValues()) {
                 String name = propertyValue.getName();
                 Object value = propertyValue.getValue();
-                if (value instanceof BeanReference beanReference) {
+                if (value instanceof BeanReference) {
+                    // A 依赖 B，获取 B 的实例化
+                    BeanReference beanReference = (BeanReference) value;
                     value = getBean(beanReference.getBeanName());
                 }
                 BeanUtil.setFieldValue(bean, name, value);
@@ -106,15 +108,15 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
      */
     private Object initializeBean(String beanName, Object bean, BeanDefinition beanDefinition) {
 
-        if (bean instanceof Aware){
-            if (bean instanceof BeanFactoryAware beanFactoryAware){
-                beanFactoryAware.setBeanFactory(this);
+        if (bean instanceof Aware) {
+            if (bean instanceof BeanFactoryAware) {
+                ((BeanFactoryAware) bean).setBeanFactory(this);
             }
-            if (bean instanceof BeanClassLoaderAware beanClassLoaderAware){
-                beanClassLoaderAware.setBeanClassLoader(getBeanClassLoader());
+            if (bean instanceof BeanClassLoaderAware) {
+                ((BeanClassLoaderAware) bean).setBeanClassLoader(getBeanClassLoader());
             }
-            if (bean instanceof BeanNameAware beanNameAware){
-                beanNameAware.setBeanName(beanName);
+            if (bean instanceof BeanNameAware) {
+                ((BeanNameAware) bean).setBeanName(beanName);
             }
         }
 
@@ -137,8 +139,8 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
      * @throws Exception
      */
     private void invokeInitMethods(String beanName, Object bean, BeanDefinition beanDefinition) throws Exception {
-        if (bean instanceof InitializingBean initializingBean) {
-            initializingBean.afterPropertiesSet();
+        if (bean instanceof InitializingBean) {
+            ((InitializingBean) bean).afterPropertiesSet();
         }
         String initMethodName = beanDefinition.getInitMethodName();
         if (StrUtil.isNotEmpty(initMethodName) && !(bean instanceof InitializingBean)) {

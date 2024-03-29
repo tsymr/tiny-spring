@@ -8,6 +8,7 @@ import io.wf.springframework.beans.factory.config.BeanDefinition;
 import io.wf.springframework.beans.factory.config.BeanFactoryPostProcessor;
 
 import java.util.Arrays;
+import java.util.stream.Collectors;
 
 /**
  * MyBeanFactoryPostProcessor
@@ -19,7 +20,7 @@ import java.util.Arrays;
 public class MyBeanFactoryPostProcessor implements BeanFactoryPostProcessor {
     @Override
     public void postProcessBeanFactory(ConfigurableListableBeanFactory beanFactory) throws BeansException {
-        if (Arrays.stream(beanFactory.getBeanDefinitionNames()).toList().contains("userServiceV2")) {
+        if (Arrays.asList(beanFactory.getBeanDefinitionNames()).contains("userServiceV2")) {
             BeanDefinition beanDefinition = beanFactory.getBeanDefinition("userServiceV2");
             PropertyValues propertyValues =  beanDefinition.getPropertyValues();
             propertyValues.addPropertyValue(new PropertyValue("company", "改为匠人网络"));

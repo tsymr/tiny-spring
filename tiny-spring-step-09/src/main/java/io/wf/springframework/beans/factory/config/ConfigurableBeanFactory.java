@@ -10,9 +10,9 @@ import io.wf.springframework.beans.factory.HierarchicalBeanFactory;
  * @date 2024/3/28 3:09 PM
  */
 public interface ConfigurableBeanFactory extends HierarchicalBeanFactory, SingletonBeanRegistry {
-    String SCOPE_SINGLETON = "singleton";
+     String SCOPE_SINGLETON = "singleton";
 
-    String SCOPE_PROTOTYPE = "prototype";
+     String SCOPE_PROTOTYPE = "prototype";
 
     void addBeanPostProcessor(BeanPostProcessor beanPostProcessor);
 }

@@ -28,8 +28,8 @@ public class DisposableBeanAdapter implements DisposableBean {
 
     @Override
     public void destroy() throws Exception {
-        if (bean instanceof DisposableBean disposableBean){
-            disposableBean.destroy();
+        if (bean instanceof DisposableBean){
+            ((DisposableBean) bean).destroy();
         }
         if (StrUtil.isNotEmpty(destroyMethodName) &&!(bean instanceof DisposableBean)){
             Method method = bean.getClass().getMethod(destroyMethodName);

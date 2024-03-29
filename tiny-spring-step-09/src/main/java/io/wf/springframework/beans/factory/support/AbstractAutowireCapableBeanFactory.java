@@ -36,7 +36,9 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
             throw new BeansException("Instantiate bean of " + beanName + " failed", e);
         }
         registerDisposableBeanIfNecessary(beanName, bean, beanDefinition);
-        addSingleton(beanName, bean);
+        if (beanDefinition.isSingleton()) {
+            addSingleton(beanName, bean);
+        }
         return bean;
     }
 
@@ -59,7 +61,9 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
             for (PropertyValue propertyValue : propertyValues.getPropertyValues()) {
                 String name = propertyValue.getName();
                 Object value = propertyValue.getValue();
-                if (value instanceof BeanReference beanReference) {
+                if (value instanceof BeanReference) {
+                    // A 依赖 B，获取 B 的实例化
+                    BeanReference beanReference = (BeanReference) value;
                     value = getBean(beanReference.getBeanName());
                 }
                 BeanUtil.setFieldValue(bean, name, value);
@@ -82,19 +86,23 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 
     private void invokeInitMethods(String beanName, Object bean, BeanDefinition beanDefinition) throws Exception {
 
-        if (bean instanceof Aware){
-            if (bean instanceof BeanFactoryAware beanFactoryAware){
+        if (bean instanceof Aware) {
+            if (bean instanceof BeanFactoryAware) {
+                BeanFactoryAware beanFactoryAware = (BeanFactoryAware) bean;
                 beanFactoryAware.setBeanFactory(this);
             }
-            if (bean instanceof BeanClassLoaderAware beanClassLoaderAware){
+            if (bean instanceof BeanClassLoaderAware) {
+                BeanClassLoaderAware beanClassLoaderAware = (BeanClassLoaderAware) bean;
                 beanClassLoaderAware.setBeanClassLoader(getBeanClassLoader());
             }
-            if (bean instanceof BeanNameAware beanNameAware){
+            if (bean instanceof BeanNameAware) {
+                BeanNameAware beanNameAware = (BeanNameAware) bean;
                 beanNameAware.setBeanName(beanName);
             }
         }
 
-        if (bean instanceof InitializingBean initializingBean) {
+        if (bean instanceof InitializingBean ) {
+            InitializingBean  initializingBean = (InitializingBean) bean;
             initializingBean.afterPropertiesSet();
         }
         String initMethodName = beanDefinition.getInitMethodName();
@@ -133,6 +141,9 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
     }
 
     private void registerDisposableBeanIfNecessary(String beanName, Object bean, BeanDefinition beanDefinition) {
+        if (!beanDefinition.isSingleton()) {
+            return;
+        }
         if ((bean instanceof DisposableBean) || StrUtil.isNotEmpty(beanDefinition.getDestroyMethodName())) {
             registerDisposableBean(beanName, new DisposableBeanAdapter(beanName, bean, beanDefinition));
         }
