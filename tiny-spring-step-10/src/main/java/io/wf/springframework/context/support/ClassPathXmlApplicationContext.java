@@ -1,5 +1,7 @@
 package io.wf.springframework.context.support;
 
+import io.wf.springframework.core.io.Resource;
+
 /**
  * ClassPathXmlApplicationContext
  *
@@ -25,10 +27,9 @@ public class ClassPathXmlApplicationContext extends AbstractXmlApplicationContex
     }
 
 
-
-
     @Override
     protected String[] getConfigLocations() {
         return this.configLocations;
     }
+
 }

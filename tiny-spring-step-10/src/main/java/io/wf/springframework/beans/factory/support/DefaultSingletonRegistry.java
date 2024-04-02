@@ -21,7 +21,8 @@ public class DefaultSingletonRegistry implements SingletonBeanRegistry {
 
     private Map<String, DisposableBean> disposableBeanMap = new ConcurrentHashMap<>();
 
-    protected void addSingleton(String beanName, Object singleton) {
+    @Override
+    public void registerSingleton(String beanName, Object singleton) {
         this.singletonObjects.put(beanName, singleton);
     }
 

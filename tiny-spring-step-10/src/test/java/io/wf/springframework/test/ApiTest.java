@@ -15,6 +15,7 @@ import io.wf.springframework.beans.factory.config.BeanDefinition;
 import io.wf.springframework.beans.factory.support.DefaultListableBeanFactory;
 import io.wf.springframework.test.bean.UserServiceV2;
 import io.wf.springframework.test.bean.aware.AwareUserService;
+import io.wf.springframework.test.bean.event.CustomEvent;
 import io.wf.springframework.test.bean.factorybean.FactoryBeanUserService;
 import io.wf.springframework.test.common.MyBeanFactoryPostProcessor;
 import io.wf.springframework.test.common.MyBeanPostProcessor;
@@ -166,5 +167,13 @@ public class ApiTest {
         // 2. 调用代理方法
         FactoryBeanUserService userService = applicationContext.getBean("userService", FactoryBeanUserService.class);
         System.out.println("测试结果：" + userService.queryUserInfo());
+    }
+
+    @Test
+    public void test_event() {
+        ClassPathXmlApplicationContext applicationContext = new ClassPathXmlApplicationContext("classpath:event.xml");
+        applicationContext.publishEvent(new CustomEvent(applicationContext, 1019129009086763L, "成功了！"));
+
+        applicationContext.registerShutdownHook();
     }
 }
