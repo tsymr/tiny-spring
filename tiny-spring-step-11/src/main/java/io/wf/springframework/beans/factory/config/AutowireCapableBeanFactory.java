@@ -1,5 +1,6 @@
 package io.wf.springframework.beans.factory.config;
 
+import io.wf.springframework.beans.BeansException;
 import io.wf.springframework.beans.factory.BeanFactory;
 
 /**
@@ -10,4 +11,9 @@ import io.wf.springframework.beans.factory.BeanFactory;
  * @date 2024/4/2 10:43 AM
  */
 public interface AutowireCapableBeanFactory extends BeanFactory {
+
+    Object applyBeanPostProcessorsBeforeInitialization(Object existingBean, String beanName) throws BeansException;
+
+    Object applyBeanPostProcessorsAfterInitialization(Object existingBean, String beanName) throws BeansException;
+
 }
