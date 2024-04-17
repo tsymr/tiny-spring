@@ -5,7 +5,7 @@ package io.wf.springframework.beans.factory;
  *
  * @author Ts
  * @version 1.0.0
- * @date 2024/4/2 10:39 AM
+ * @date 2024/4/16 2:19 PM
  */
 public interface HierarchicalBeanFactory extends BeanFactory{
 }

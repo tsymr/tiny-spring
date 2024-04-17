@@ -9,11 +9,11 @@ import java.util.Map;
  *
  * @author Ts
  * @version 1.0.0
- * @date 2024/4/2 10:37 AM
+ * @date 2024/4/16 2:17 PM
  */
-public interface ListableBeanFactory extends BeanFactory {
+public interface ListableBeanFactory extends BeanFactory{
 
-    <T> Map<String, T> getBeansOfType(Class<T> type) throws BeansException;
+   <T> Map<String ,T> getBeansOfType(Class<T> type) throws BeansException;
 
-    String[] getBeanDefinitionNames();
+   String[] getBeanDefinitionNames();
 }

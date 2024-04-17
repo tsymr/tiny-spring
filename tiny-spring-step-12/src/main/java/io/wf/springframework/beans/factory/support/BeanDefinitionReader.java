@@ -9,10 +9,9 @@ import io.wf.springframework.core.io.ResourceLoader;
  *
  * @author Ts
  * @version 1.0.0
- * @date 2024/3/29 10:22 AM
+ * @date 2024/4/16 2:37 PM
  */
 public interface BeanDefinitionReader {
-
     BeanDefinitionRegistry getRegistry();
 
     ResourceLoader getResourceLoader();
@@ -24,5 +23,4 @@ public interface BeanDefinitionReader {
     void loadBeanDefinitions(Resource resource) throws BeansException;
 
     void loadBeanDefinitions(Resource[] resources) throws BeansException;
-
 }

@@ -12,14 +12,12 @@ import java.lang.reflect.Method;
  *
  * @author Ts
  * @version 1.0.0
- * @date 2024/4/8 11:15 AM
+ * @date 2024/4/16 2:28 PM
  */
-public class DisposableBeanAdapter  implements DisposableBean {
+public class DisposableBeanAdapter implements DisposableBean {
 
     private String beanName;
-
     private Object bean;
-
     private String destroyMethodName;
 
     public DisposableBeanAdapter(String beanName, Object bean, BeanDefinition beanDefinition) {
@@ -30,15 +28,17 @@ public class DisposableBeanAdapter  implements DisposableBean {
 
     @Override
     public void destroy() throws Exception {
-        if (bean instanceof DisposableBean){
-            ((DisposableBean)bean).destroy();
+        if (bean instanceof DisposableBean) {
+            ((DisposableBean) bean).destroy();
         }
-        if (!(bean instanceof DisposableBean) && StrUtil.isNotEmpty(destroyMethodName)){
-            Method method = bean.getClass().getMethod(destroyMethodName);
-            if (method == null){
-                throw new BeansException("Could not find a destroy method named [" + destroyMethodName + "] on bean with name [" + beanName +"]");
+        if (!(bean instanceof DisposableBean) && StrUtil.isNotEmpty(destroyMethodName)) {
+            Class<?> clazz = bean.getClass();
+            Method method = clazz.getMethod(destroyMethodName);
+            if (null == method) {
+                throw new BeansException("No destroy method named [" + destroyMethodName + "] found on bean with name [" + beanName + "]");
             }
             method.invoke(bean);
         }
+
     }
 }

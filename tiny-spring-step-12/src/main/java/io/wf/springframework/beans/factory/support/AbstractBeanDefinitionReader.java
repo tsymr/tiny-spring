@@ -8,9 +8,9 @@ import io.wf.springframework.core.io.ResourceLoader;
  *
  * @author Ts
  * @version 1.0.0
- * @date 2024/3/29 10:30 AM
+ * @date 2024/4/16 2:40 PM
  */
-public abstract class AbstractBeanDefinitionReader implements BeanDefinitionReader{
+public abstract class AbstractBeanDefinitionReader implements BeanDefinitionReader {
 
     private final BeanDefinitionRegistry beanDefinitionRegistry;
 
@@ -27,12 +27,12 @@ public abstract class AbstractBeanDefinitionReader implements BeanDefinitionRead
     }
 
     @Override
-    public BeanDefinitionRegistry getRegistry() {
-        return beanDefinitionRegistry;
+    public ResourceLoader getResourceLoader() {
+        return resourceLoader;
     }
 
     @Override
-    public ResourceLoader getResourceLoader() {
-        return resourceLoader;
+    public BeanDefinitionRegistry getRegistry() {
+        return null;
     }
 }

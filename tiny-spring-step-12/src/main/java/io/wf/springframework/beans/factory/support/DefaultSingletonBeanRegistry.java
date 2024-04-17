@@ -13,13 +13,14 @@ import java.util.concurrent.ConcurrentHashMap;
  *
  * @author Ts
  * @version 1.0.0
- * @date 2024/4/8 11:13 AM
+ * @date 2024/4/16 2:26 PM
  */
 public class DefaultSingletonBeanRegistry implements SingletonBeanRegistry {
 
     private Map<String, Object> singletonObjects = new ConcurrentHashMap<>();
 
     private Map<String, DisposableBean> disposableBeanMap = new ConcurrentHashMap<>();
+
     @Override
     public Object getSingleton(String beanName) {
         return this.singletonObjects.get(beanName);
@@ -30,7 +31,6 @@ public class DefaultSingletonBeanRegistry implements SingletonBeanRegistry {
         this.singletonObjects.put(beanName, singleton);
     }
 
-    @Override
     public void registerDisposableBean(String beanName, DisposableBean disposableBean){
         this.disposableBeanMap.put(beanName, disposableBean);
     }
@@ -45,7 +45,7 @@ public class DefaultSingletonBeanRegistry implements SingletonBeanRegistry {
             try {
                 disposableBean.destroy();
             } catch (Exception e) {
-                throw new BeansException("Destroy method on bean with name [" + disposableBeanName + "] threw an exception" , e);
+                throw new BeansException("Destroy method on bean [" + disposableBeanName + "] threw an exception", e);
             }
         }
     }

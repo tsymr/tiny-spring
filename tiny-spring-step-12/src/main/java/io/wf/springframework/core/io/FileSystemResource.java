@@ -10,30 +10,25 @@ import java.nio.file.Files;
  *
  * @author Ts
  * @version 1.0.0
- * @date 2024/3/27 10:36 AM
+ * @date 2024/4/10 10:06 AM
  */
-public class FileSystemResource implements Resource{
+public class FileSystemResource implements Resource {
 
-    private final File file;
-
-    private final String path;
-
-    public FileSystemResource(File file) {
-        this.file = file;
-        this.path = file.getPath();
-    }
+    private String path;
+    private File file;
 
     public FileSystemResource(String path) {
         this.path = path;
         this.file = new File(path);
     }
 
+    public FileSystemResource(File file) {
+        this.file = file;
+        this.path = file.getPath();
+    }
+
     @Override
     public InputStream getInputStream() throws IOException {
         return Files.newInputStream(file.toPath());
-    }
-
-    public final String getPath() {
-        return path;
     }
 }

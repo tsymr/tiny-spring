@@ -7,11 +7,11 @@ import io.wf.springframework.beans.BeansException;
  *
  * @author Ts
  * @version 1.0.0
- * @date 2024/4/2 10:41 AM
+ * @date 2024/4/16 2:19 PM
  */
 public interface BeanPostProcessor {
 
-    Object postProcessBeforeInitialization(Object bean, String beanName) throws BeansException;
+    Object postProcessBeforeInitialization(String beanName, Object bean) throws BeansException;
 
-    Object postProcessAfterInitialization(Object bean, String beanName) throws BeansException;
+    Object postProcessAfterInitialization(String beanName, Object bean) throws BeansException;
 }

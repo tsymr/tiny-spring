@@ -7,11 +7,13 @@ import io.wf.springframework.beans.factory.PropertyValue;
 import io.wf.springframework.beans.factory.config.BeanDefinition;
 import io.wf.springframework.beans.factory.config.BeanReference;
 import io.wf.springframework.beans.factory.support.AbstractBeanDefinitionReader;
+import io.wf.springframework.beans.factory.support.BeanDefinitionReader;
 import io.wf.springframework.beans.factory.support.BeanDefinitionRegistry;
 import io.wf.springframework.core.io.Resource;
 import io.wf.springframework.core.io.ResourceLoader;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
+import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
 import java.io.IOException;
@@ -22,7 +24,7 @@ import java.io.InputStream;
  *
  * @author Ts
  * @version 1.0.0
- * @date 2024/3/29 10:31 AM
+ * @date 2024/4/16 2:40 PM
  */
 public class XmlBeanDefinitionReader extends AbstractBeanDefinitionReader {
 
@@ -65,7 +67,7 @@ public class XmlBeanDefinitionReader extends AbstractBeanDefinitionReader {
     }
 
 
-    private void doLoadBeanDefinitions(InputStream inputStream) throws ClassNotFoundException{
+    private void doLoadBeanDefinitions(InputStream inputStream) throws ClassNotFoundException {
         Document document = XmlUtil.readXML(inputStream);
         Element root = document.getDocumentElement();
         NodeList childNodes = root.getChildNodes();
@@ -77,30 +79,28 @@ public class XmlBeanDefinitionReader extends AbstractBeanDefinitionReader {
                 continue;
             }
             Element bean = (Element) childNodes.item(i);
-
             String id = bean.getAttribute("id");
             String name = bean.getAttribute("name");
-            String className = bean.getAttribute("class");
+            String beanClass = bean.getAttribute("class");
+            String initMethodName = bean.getAttribute("init-method");
+            String destroyMethodName = bean.getAttribute("destroy-method");
+            String scope = bean.getAttribute("scope");
 
-            Class<?> clazz = Class.forName(className);
-            String beanName = StrUtil.isNotEmpty(id) ? id : name;
+            String beanName = StrUtil.isNotEmpty(id) ? id: name;
+            Class<?> clazz = Class.forName(beanClass);
             if (StrUtil.isEmpty(beanName)){
-                beanName = StrUtil.lowerFirst(clazz.getSimpleName());
+                beanName = clazz.getSimpleName();
             }
+
             if (getRegistry().containsBeanDefinition(beanName)){
                 throw new BeansException("Duplicate beanName [" + beanName + "] is not allowed");
             }
-            String initMethodName = bean.getAttribute("init-method");
-            String destroyMethodName = bean.getAttribute("destroy-method");
-            String beanScope = bean.getAttribute("scope");
 
             BeanDefinition beanDefinition = new BeanDefinition(clazz);
-            beanDefinition.setDestroyMethodName(destroyMethodName);
+            beanDefinition.setScope(scope);
             beanDefinition.setInitMethodName(initMethodName);
-            if (StrUtil.isNotEmpty(beanScope)){
-                beanDefinition.setScope(beanScope);
-            }
-
+            beanDefinition.setDestroyMethodName(destroyMethodName);
+            beanDefinition.setScope(scope);
 
             for (int j = 0; j < bean.getChildNodes().getLength(); j++) {
                 if (!(bean.getChildNodes().item(j) instanceof Element)){
@@ -109,13 +109,14 @@ public class XmlBeanDefinitionReader extends AbstractBeanDefinitionReader {
                 if (!"property".equals(bean.getChildNodes().item(j).getNodeName())){
                     continue;
                 }
+
                 Element property = (Element) bean.getChildNodes().item(j);
 
                 String attrName = property.getAttribute("name");
                 String attrValue = property.getAttribute("value");
                 String attrRef = property.getAttribute("ref");
-                Object value = StrUtil.isEmpty(attrRef) ? attrValue : new BeanReference(attrRef);
 
+                Object value = StrUtil.isNotEmpty(attrRef) ? attrValue: new BeanReference(attrRef);
                 beanDefinition.getPropertyValues().addPropertyValue(new PropertyValue(attrName, value));
             }
             getRegistry().registerBeanDefinition(beanName, beanDefinition);

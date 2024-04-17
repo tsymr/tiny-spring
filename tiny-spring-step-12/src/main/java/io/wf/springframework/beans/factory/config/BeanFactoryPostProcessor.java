@@ -8,9 +8,9 @@ import io.wf.springframework.beans.factory.ConfigurableListableBeanFactory;
  *
  * @author Ts
  * @version 1.0.0
- * @date 2024/4/2 10:42 AM
+ * @date 2024/4/16 2:25 PM
  */
 public interface BeanFactoryPostProcessor {
-    void postProcessBeanFactory(ConfigurableListableBeanFactory beanFactory) throws BeansException;
 
+    void postProcessBeanFactory(ConfigurableListableBeanFactory beanFactory) throws BeansException;
 }

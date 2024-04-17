@@ -7,11 +7,11 @@ import io.wf.springframework.beans.factory.config.BeanDefinition;
  *
  * @author Ts
  * @version 1.0.0
- * @date 2024/3/29 10:23 AM
+ * @date 2024/4/16 2:36 PM
  */
 public interface BeanDefinitionRegistry {
 
     void registerBeanDefinition(String beanName, BeanDefinition beanDefinition);
 
-    boolean containsBeanDefinition(String beanName);
+    boolean containsBeanDefinition(String  beanName);
 }

@@ -1,21 +1,17 @@
 package io.wf.springframework.beans.factory.config;
 
-import io.wf.springframework.beans.factory.DisposableBean;
-
 /**
  * SingletonBeanRegistry
  *
  * @author Ts
  * @version 1.0.0
- * @date 2024/4/2 10:43 AM
+ * @date 2024/4/16 2:15 PM
  */
 public interface SingletonBeanRegistry {
 
     Object getSingleton(String beanName);
 
-    void registerSingleton(String beanName, Object singleton);
+    void  registerSingleton(String beanName, Object singleton);
 
     void destroySingletons();
-
-    void registerDisposableBean(String beanName, DisposableBean disposableBean);
 }

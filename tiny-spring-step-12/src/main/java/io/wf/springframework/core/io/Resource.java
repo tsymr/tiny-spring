@@ -8,7 +8,7 @@ import java.io.InputStream;
  *
  * @author Ts
  * @version 1.0.0
- * @date 2024/3/27 10:27 AM
+ * @date 2024/4/10 10:04 AM
  */
 public interface Resource {
     InputStream getInputStream() throws IOException;

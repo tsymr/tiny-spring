@@ -1,7 +1,5 @@
 package io.wf.springframework.core.io;
 
-import cn.hutool.core.lang.Assert;
-
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
@@ -13,27 +11,26 @@ import java.net.URLConnection;
  *
  * @author Ts
  * @version 1.0.0
- * @date 2024/3/27 10:37 AM
+ * @date 2024/4/10 10:07 AM
  */
-public class UrlResource implements Resource {
-    private final URL url;
+public class UrlResource implements Resource{
+
+    private URL url;
 
     public UrlResource(URL url) {
-        Assert.notNull(url,"URL must not be null");
         this.url = url;
     }
 
     @Override
     public InputStream getInputStream() throws IOException {
-        URLConnection con = this.url.openConnection();
+        URLConnection conn = url.openConnection();
         try {
-            return con.getInputStream();
-        }
-        catch (IOException ex){
-            if (con instanceof HttpURLConnection){
-                ((HttpURLConnection) con).disconnect();
-            }
-            throw ex;
+            return conn.getInputStream();
+        } catch (IOException e) {
+           if (conn instanceof HttpURLConnection){
+               ((HttpURLConnection) conn).disconnect();
+           }
+            throw e;
         }
     }
 }

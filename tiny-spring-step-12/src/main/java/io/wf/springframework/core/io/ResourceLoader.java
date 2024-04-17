@@ -5,10 +5,11 @@ package io.wf.springframework.core.io;
  *
  * @author Ts
  * @version 1.0.0
- * @date 2024/3/27 10:27 AM
+ * @date 2024/4/10 10:09 AM
  */
 public interface ResourceLoader {
 
     String CLASS_PATH_PREFIX = "classpath:";
+
     Resource getResource(String location);
 }

@@ -1,6 +1,5 @@
 package io.wf.springframework.core.io;
 
-import cn.hutool.core.lang.Assert;
 import io.wf.springframework.util.ClassUtils;
 
 import java.io.IOException;
@@ -11,23 +10,21 @@ import java.io.InputStream;
  *
  * @author Ts
  * @version 1.0.0
- * @date 2024/3/27 10:34 AM
+ * @date 2024/4/10 10:05 AM
  */
 public class ClassPathResource implements Resource{
 
-
-    private final String path;
+    private String path;
 
     private ClassLoader classLoader;
 
     public ClassPathResource(String path) {
-        this(path, (ClassLoader) null);
+        this(path, null);
     }
 
     public ClassPathResource(String path, ClassLoader classLoader) {
-        Assert.notNull(path, "Path must not be null");
         this.path = path;
-        this.classLoader = (classLoader != null ? classLoader : ClassUtils.getDefaultClassLoader());
+        this.classLoader = classLoader == null ? ClassUtils.getDefaultClassLoader() : classLoader;
     }
 
     @Override
