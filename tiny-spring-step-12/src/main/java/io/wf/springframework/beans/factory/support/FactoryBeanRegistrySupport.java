@@ -23,14 +23,14 @@ public class FactoryBeanRegistrySupport  extends DefaultSingletonBeanRegistry{
 
 
     protected Object getObjectFromFactoryBean(FactoryBean factoryBean, String beanName){
-        if (factoryBean.isSingleton()){
+        if (factoryBean.isSingleton()) {
             Object object = this.factoryBeanObjectCache.get(beanName);
-            if (null == object){
+            if (null == object) {
                 object = doGetObjectFromFactoryBean(factoryBean, beanName);
-                this.factoryBeanObjectCache.put(beanName, factoryBean);
+                this.factoryBeanObjectCache.put(beanName, object);
             }
             return object;
-        }else {
+        } else {
             return doGetObjectFromFactoryBean(factoryBean, beanName);
         }
     }

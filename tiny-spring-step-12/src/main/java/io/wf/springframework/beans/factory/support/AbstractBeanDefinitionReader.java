@@ -33,6 +33,6 @@ public abstract class AbstractBeanDefinitionReader implements BeanDefinitionRead
 
     @Override
     public BeanDefinitionRegistry getRegistry() {
-        return null;
+        return beanDefinitionRegistry;
     }
 }
