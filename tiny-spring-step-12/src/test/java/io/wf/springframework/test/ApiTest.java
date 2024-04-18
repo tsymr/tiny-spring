@@ -7,7 +7,9 @@ import io.wf.springframework.aop.TargetSource;
 import io.wf.springframework.aop.aspectj.AspectJExpressionPointcut;
 import io.wf.springframework.aop.framework.Cglib2AopProxy;
 import io.wf.springframework.aop.framework.JdkDynamicAopProxy;
+import io.wf.springframework.aop.framework.ProxyFactory;
 import io.wf.springframework.aop.framework.ReflectiveMethodInvocation;
+import io.wf.springframework.aop.framework.adapter.MethodBeforeAdviceInterceptor;
 import io.wf.springframework.beans.factory.PropertyValue;
 import io.wf.springframework.beans.factory.PropertyValues;
 import io.wf.springframework.beans.factory.config.BeanReference;
@@ -16,6 +18,10 @@ import io.wf.springframework.context.support.ClassPathXmlApplicationContext;
 import io.wf.springframework.core.io.DefaultResourceLoader;
 import io.wf.springframework.core.io.Resource;
 import io.wf.springframework.core.io.ResourceLoader;
+import io.wf.springframework.test.aop.AopUserService;
+import io.wf.springframework.test.aop.AopUserServiceBeforeAdvice;
+import io.wf.springframework.test.aop.AopUserServiceInterceptor;
+import io.wf.springframework.test.aop.IAopUserService;
 import io.wf.springframework.test.bean.UserDao;
 import io.wf.springframework.test.bean.UserService;
 import io.wf.springframework.beans.factory.config.BeanDefinition;
@@ -30,6 +36,7 @@ import io.wf.springframework.test.proxy.IProxyService;
 import io.wf.springframework.test.proxy.ProxyService;
 import io.wf.springframework.test.proxy.ProxyServiceInterceptor;
 import org.aopalliance.intercept.MethodInterceptor;
+import org.junit.Before;
 import org.junit.Test;
 
 import java.io.IOException;
@@ -251,4 +258,43 @@ public class ApiTest {
         // 测试调用
         System.out.println("测试结果：" + proxy_cglib.register("花花"));
     }
+
+
+    @Test
+    public void test_proxyFactory() {
+
+        // 目标对象
+        IAopUserService userService = new AopUserService();
+        // 组装代理信息
+        AdvisedSupport advisedSupport = new AdvisedSupport();
+        advisedSupport.setTargetSource(new TargetSource(userService));
+        advisedSupport.setMethodInterceptor(new AopUserServiceInterceptor());
+        advisedSupport.setMethodMatcher(new AspectJExpressionPointcut("execution(* io.wf.springframework.test.aop.IAopUserService.*(..))"));
+
+
+        advisedSupport.setProxyTargetClass(false); // false/true，JDK动态代理、CGlib动态代理
+        IAopUserService proxy = (IAopUserService) new ProxyFactory(advisedSupport).getProxy();
+
+        System.out.println("测试结果：" + proxy.queryUserInfo());
+    }
+
+    @Test
+    public void test_beforeAdvice() {
+        // 目标对象
+        IAopUserService userService = new AopUserService();
+        AdvisedSupport advisedSupport = new AdvisedSupport();
+        advisedSupport.setTargetSource(new TargetSource(userService));
+        advisedSupport.setMethodInterceptor(new AopUserServiceInterceptor());
+        advisedSupport.setMethodMatcher(new AspectJExpressionPointcut("execution(* io.wf.springframework.test.aop.IAopUserService.*(..))"));
+
+
+        AopUserServiceBeforeAdvice beforeAdvice = new AopUserServiceBeforeAdvice();
+        MethodBeforeAdviceInterceptor interceptor = new MethodBeforeAdviceInterceptor(beforeAdvice);
+        advisedSupport.setMethodInterceptor(interceptor);
+
+        IAopUserService proxy = (IAopUserService) new ProxyFactory(advisedSupport).getProxy();
+        System.out.println("测试结果：" + proxy.queryUserInfo());
+    }
+
+
 }
