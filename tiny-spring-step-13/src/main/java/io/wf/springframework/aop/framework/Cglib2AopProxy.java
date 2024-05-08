@@ -12,7 +12,7 @@ import java.lang.reflect.Method;
  *
  * @author Ts
  * @version 1.0.0
- * @date 2024/5/6 2:31 PM
+ * @date 2024/4/17 3:53 PM
  */
 public class Cglib2AopProxy implements AopProxy{
 
@@ -32,8 +32,8 @@ public class Cglib2AopProxy implements AopProxy{
     }
 
 
-    private static class DynamicAdvisedInterceptor implements MethodInterceptor{
-        private final AdvisedSupport advised;
+    private static class DynamicAdvisedInterceptor implements MethodInterceptor {
+       private final AdvisedSupport advised;
 
         public DynamicAdvisedInterceptor(AdvisedSupport advised) {
             this.advised = advised;
@@ -41,16 +41,17 @@ public class Cglib2AopProxy implements AopProxy{
 
         @Override
         public Object intercept(Object obj, Method method, Object[] args, MethodProxy proxy) throws Throwable {
-            CglibMethodInvocation cglibMethodInvocation = new CglibMethodInvocation(advised.getTargetSource().getTarget(), method, args, proxy);
-            if (advised.getMethodMatcher().matches(method,advised.getTargetSource().getTarget().getClass())){
-                return advised.getMethodInterceptor().invoke(cglibMethodInvocation);
+            CglibMethodInvocation methodInvocation = new CglibMethodInvocation(advised.getTargetSource().getTarget(), method, args, proxy);
+            if (advised.getMethodMatcher().matches(method, advised.getTargetSource().getTarget().getClass())){
+                return advised.getMethodInterceptor().invoke(methodInvocation);
             }
-           return cglibMethodInvocation.proceed();
+            return methodInvocation.proceed();
         }
     }
 
 
     private static class CglibMethodInvocation extends ReflectiveMethodInvocation{
+
         private final MethodProxy methodProxy;
 
         public CglibMethodInvocation(Object target, Method method, Object[] arguments, MethodProxy methodProxy) {

@@ -5,7 +5,7 @@ package io.wf.springframework.aop;
  *
  * @author Ts
  * @version 1.0.0
- * @date 2024/5/6 2:17 PM
+ * @date 2024/4/17 3:43 PM
  */
 public class TargetSource {
 
@@ -15,11 +15,15 @@ public class TargetSource {
         this.target = target;
     }
 
+    /**
+     * 获取目标类的所有接口
+     * @return
+     */
     public Class<?>[] getTargetClass(){
         return this.target.getClass().getInterfaces();
     }
 
     public Object getTarget() {
-        return this.target;
+        return target;
     }
 }

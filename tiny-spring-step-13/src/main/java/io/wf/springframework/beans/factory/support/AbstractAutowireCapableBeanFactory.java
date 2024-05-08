@@ -16,7 +16,7 @@ import java.lang.reflect.Method;
  *
  * @author Ts
  * @version 1.0.0
- * @date 2024/5/7 2:13 PM
+ * @date 2024/4/17 10:24 AM
  */
 public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFactory implements AutowireCapableBeanFactory {
 
@@ -24,44 +24,42 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 
     @Override
     protected Object createBean(String beanName, BeanDefinition beanDefinition, Object[] args) throws BeansException {
-        Object bean = null;
+        Object bean;
         try {
             // 判断是否返回代理 Bean 对象
             bean = resolveBeforeInstantiation(beanName, beanDefinition);
             if (null != bean) {
-                return  bean;
+                return bean;
             }
-            // 实例化 Bean
-            bean = createBean(beanName, beanDefinition, args);
-            // 填充属性
-            applyPropertyValues(beanName, bean, beanDefinition);
-            // 执行 Bean 的初始化方法和 BeanPostProcessor 的前置和后置处理方法
-            bean = initializeBean(beanName, bean, beanDefinition);
-        }catch (Exception e) {
+
+            bean = createBeanInstance(beanName, beanDefinition, args);
+            applyBeanPropertyValues(beanName, beanDefinition, bean);
+            bean = initializeBean(beanName, beanDefinition, bean);
+        } catch (Exception e) {
             throw new BeansException("Instantiation of bean failed", e);
         }
-        registerDisposableBeanIfNecessary(beanName, bean, beanDefinition);
 
-        if (beanDefinition.isSingleton()){
+        registerDisposableBeanIfNecessary(beanName, beanDefinition, bean);
+
+        if (beanDefinition.isSingleton()) {
             registerSingleton(beanName, bean);
         }
-
         return bean;
     }
 
-    protected Object resolveBeforeInstantiation(String beanName, BeanDefinition beanDefinition){
-        Object bean =applyBeanPostProcessorsBeforeInstantiation(beanDefinition.getBeanClass(), beanName);
+    protected Object resolveBeforeInstantiation(String beanName, BeanDefinition beanDefinition) {
+        Object bean = applyBeanPostProcessorBeforeInstantiation(beanDefinition.getBeanClass(), beanName);
         if (null != bean) {
             bean = applyBeanPostProcessorsAfterInitialization(bean, beanName);
         }
         return bean;
     }
 
-
-    protected Object applyBeanPostProcessorsBeforeInstantiation(Class<?> beanClass, String beanName) {
-        for (BeanPostProcessor beanPostProcessor : getBeanPostProcessors()) {
-            if (beanPostProcessor instanceof InstantiationAwareBeanPostProcessor) {
-                Object result = ((InstantiationAwareBeanPostProcessor) beanPostProcessor).postProcessBeforeInstantiation(beanClass, beanName);
+    // 注意，此方法为新增方法，与 “applyBeanPostProcessorBeforeInitialization” 是两个方法
+    public Object applyBeanPostProcessorBeforeInstantiation(Class<?> beanClass, String beanName) throws BeansException {
+        for (BeanPostProcessor processor : getBeanPostProcessors()) {
+            if (processor instanceof InstantiationAwareBeanPostProcessor) {
+                Object result = ((InstantiationAwareBeanPostProcessor) processor).postProcessBeforeInstantiation(beanClass, beanName);
                 if (null != result) {
                     return result;
                 }
@@ -70,57 +68,37 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
         return null;
     }
 
-
-    protected void registerDisposableBeanIfNecessary(String beanName, Object bean, BeanDefinition beanDefinition) {
-        if ((!beanDefinition.isSingleton())) {
-            return;
-        }
-        if ((bean instanceof DisposableBean) || StrUtil.isEmpty(beanDefinition.getDestroyMethodName())) {
-            registerDisposableBean(beanName, new DisposableBeanAdapter(bean, beanName, beanDefinition));
-        }
-    }
-
-    protected Object createBeanInstance(BeanDefinition beanDefinition, String beanName, Object[] args) {
-        Constructor constructorToUse = null;
-        Class beanClass = beanDefinition.getBeanClass();
-        Constructor[] declaredConstructors = beanClass.getDeclaredConstructors();
-        for (Constructor declaredConstructor : declaredConstructors) {
+    private Object createBeanInstance(String beanName, BeanDefinition beanDefinition, Object[] args) {
+        Class<?> beanClass = beanDefinition.getBeanClass();
+        Constructor ctor = null;
+        Constructor<?>[] declaredConstructors = beanClass.getDeclaredConstructors();
+        for (Constructor<?> declaredConstructor : declaredConstructors) {
             if (null != args && args.length == declaredConstructor.getParameterTypes().length) {
-                constructorToUse = declaredConstructor;
+                ctor = declaredConstructor;
                 break;
             }
         }
-        return getInstantiationStrategy().instantiate(beanDefinition, beanName, constructorToUse, args);
+        return getInstantiationStrategy().instantiate(beanDefinition, beanName, ctor, args);
     }
 
-    protected void applyPropertyValues(String beanName, Object bean, BeanDefinition beanDefinition) {
+    private void applyBeanPropertyValues(String beanName, BeanDefinition beanDefinition, Object bean) {
         try {
             PropertyValues propertyValues = beanDefinition.getPropertyValues();
             for (PropertyValue propertyValue : propertyValues.getPropertyValues()) {
                 String name = propertyValue.getName();
                 Object value = propertyValue.getValue();
-
                 if (value instanceof BeanReference) {
-                    BeanReference beanReference = (BeanReference) value;
-                    value = getBean(beanReference.getBeanName());
+                    value = getBean(((BeanReference) value).getBeanName());
                 }
                 BeanUtil.setFieldValue(bean, name, value);
             }
-        } catch (Exception e) {
-            throw new BeansException("Error setting property values: " + beanName, e);
+        } catch (BeansException e) {
+            throw new BeansException("Error setting bean property values: " + beanName, e);
         }
     }
 
 
-    public InstantiationStrategy getInstantiationStrategy() {
-        return instantiationStrategy;
-    }
-
-    public void setInstantiationStrategy(InstantiationStrategy instantiationStrategy) {
-        this.instantiationStrategy = instantiationStrategy;
-    }
-
-    private Object initializeBean(String beanName, Object bean, BeanDefinition beanDefinition) {
+    private Object initializeBean(String beanName, BeanDefinition beanDefinition, Object bean) {
         if (bean instanceof Aware) {
             if (bean instanceof BeanFactoryAware) {
                 ((BeanFactoryAware) bean).setBeanFactory(this);
@@ -132,38 +110,33 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
                 ((BeanClassLoaderAware) bean).setBeanClassLoader(getBeanClassLoader());
             }
         }
-
-        Object wrappedBean = applyBeanPostProcessorsAfterInitialization(bean, beanName);
-
+        Object wrappedBean = applyBeanPostProcessorsBeforeInitialization(bean, beanName);
         try {
-            invokeInitMethod(beanName, wrappedBean, beanDefinition);
+            invokeInitMethods(beanName, beanDefinition, wrappedBean);
         } catch (Exception e) {
             throw new BeansException("Invocation of init method of bean [" + beanName + "] failed", e);
         }
-
-        wrappedBean = applyBeanPostProcessorsAfterInitialization(wrappedBean, beanName);
-
+        wrappedBean = applyBeanPostProcessorsAfterInitialization(bean, beanName);
         return wrappedBean;
     }
 
-
-    private void invokeInitMethod(String beanName, Object bean, BeanDefinition beanDefinition) throws Exception {
+    private void invokeInitMethods(String beanName, BeanDefinition beanDefinition, Object bean) throws Exception {
         if (bean instanceof InitializingBean) {
             ((InitializingBean) bean).afterPropertiesSet();
         }
         String initMethodName = beanDefinition.getInitMethodName();
         if (StrUtil.isNotEmpty(initMethodName) && !(bean instanceof InitializingBean)) {
-            Method initMethod = beanDefinition.getBeanClass().getMethod(initMethodName);
-            if (null == initMethod) {
+            Method method = beanDefinition.getBeanClass().getMethod(initMethodName);
+            if (null == method) {
                 throw new BeansException("Could not find an init method named [" + initMethodName + "] on bean with name [" + beanName + "]");
             }
-            initMethod.invoke(bean);
+            method.invoke(bean);
         }
     }
 
     @Override
-    public Object applyBeanPostProcessorsBeforeInitialization(Object bean, String beanName) throws BeansException {
-        Object result = bean;
+    public Object applyBeanPostProcessorsBeforeInitialization(Object existingBean, String beanName) throws BeansException {
+        Object result = existingBean;
         for (BeanPostProcessor beanPostProcessor : getBeanPostProcessors()) {
             Object current = beanPostProcessor.postProcessBeforeInitialization(result, beanName);
             if (null == current) {
@@ -175,8 +148,8 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
     }
 
     @Override
-    public Object applyBeanPostProcessorsAfterInitialization(Object bean, String beanName) throws BeansException {
-        Object result = bean;
+    public Object applyBeanPostProcessorsAfterInitialization(Object existingBean, String beanName) throws BeansException {
+        Object result = existingBean;
         for (BeanPostProcessor beanPostProcessor : getBeanPostProcessors()) {
             Object current = beanPostProcessor.postProcessAfterInitialization(result, beanName);
             if (null == current) {
@@ -185,5 +158,22 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
             result = current;
         }
         return result;
+    }
+
+    private void registerDisposableBeanIfNecessary(String beanName, BeanDefinition beanDefinition, Object bean) {
+        if (!beanDefinition.isSingleton()) {
+            return;
+        }
+        if (bean instanceof DisposableBean || StrUtil.isNotEmpty(beanDefinition.getDestroyMethodName())) {
+            registerDisposableBean(beanName, new DisposableBeanAdapter(bean, beanName, beanDefinition));
+        }
+    }
+
+    public InstantiationStrategy getInstantiationStrategy() {
+        return instantiationStrategy;
+    }
+
+    public void setInstantiationStrategy(InstantiationStrategy instantiationStrategy) {
+        this.instantiationStrategy = instantiationStrategy;
     }
 }

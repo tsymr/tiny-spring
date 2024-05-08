@@ -12,7 +12,7 @@ import java.lang.reflect.Proxy;
  *
  * @author Ts
  * @version 1.0.0
- * @date 2024/5/6 2:28 PM
+ * @date 2024/4/17 4:00 PM
  */
 public class JdkDynamicAopProxy implements AopProxy, InvocationHandler {
 
@@ -24,7 +24,7 @@ public class JdkDynamicAopProxy implements AopProxy, InvocationHandler {
 
     @Override
     public Object getProxy() {
-        return Proxy.newProxyInstance(this.getClass().getClassLoader(), advised.getTargetSource().getTargetClass(), this);
+        return Proxy.newProxyInstance(Thread.currentThread().getContextClassLoader(), advised.getTargetSource().getTargetClass(), this);
     }
 
     @Override

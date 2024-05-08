@@ -1,4 +1,4 @@
-package io.wf.springframework.aop.appectj;
+package io.wf.springframework.aop.aspectj;
 
 import io.wf.springframework.aop.ClassFilter;
 import io.wf.springframework.aop.MethodMatcher;
@@ -12,31 +12,25 @@ import java.util.HashSet;
 import java.util.Set;
 
 /**
- * AspectJExpressionPointcut
+ * AspectJExpressionPointCut
  *
  * @author Ts
  * @version 1.0.0
- * @date 2024/5/6 2:20 PM
+ * @date 2024/4/17 3:46 PM
  */
 public class AspectJExpressionPointcut implements Pointcut, ClassFilter, MethodMatcher {
 
-    private static final Set<PointcutPrimitive> SUPPORT_PRIMITIVES = new HashSet<>();
+    private static final Set<PointcutPrimitive> SUPPORTED_PRIMITIVE = new HashSet<>();
 
     static {
-        SUPPORT_PRIMITIVES.add(PointcutPrimitive.EXECUTION);
+        SUPPORTED_PRIMITIVE.add(PointcutPrimitive.EXECUTION);
     }
 
     private final PointcutExpression pointcutExpression;
 
     public AspectJExpressionPointcut(String expression) {
-        PointcutParser pointcutParser = PointcutParser.getPointcutParserSupportingSpecifiedPrimitivesAndUsingSpecifiedClassLoaderForResolution(SUPPORT_PRIMITIVES, this.getClass().getClassLoader());
-        this.pointcutExpression = pointcutParser.parsePointcutExpression(expression);
-    }
-
-
-    @Override
-    public boolean matches(Class<?> clazz) {
-        return pointcutExpression.couldMatchJoinPointsInType(clazz);
+        PointcutParser pointcutParser = PointcutParser.getPointcutParserSupportingSpecifiedPrimitivesAndUsingSpecifiedClassLoaderForResolution(SUPPORTED_PRIMITIVE, this.getClass().getClassLoader());
+        pointcutExpression = pointcutParser.parsePointcutExpression(expression);
     }
 
     @Override
@@ -45,8 +39,13 @@ public class AspectJExpressionPointcut implements Pointcut, ClassFilter, MethodM
     }
 
     @Override
+    public boolean matches(Class<?> clazz) {
+        return pointcutExpression.couldMatchJoinPointsInType(clazz);
+    }
+
+    @Override
     public ClassFilter getClassFilter() {
-       return this;
+        return this;
     }
 
     @Override

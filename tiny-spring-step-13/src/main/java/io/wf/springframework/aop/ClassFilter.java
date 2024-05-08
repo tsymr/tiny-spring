@@ -5,10 +5,9 @@ package io.wf.springframework.aop;
  *
  * @author Ts
  * @version 1.0.0
- * @date 2024/5/6 2:15 PM
+ * @date 2024/4/17 3:38 PM
  */
 public interface ClassFilter {
-
 
     boolean matches(Class<?> clazz);
 }

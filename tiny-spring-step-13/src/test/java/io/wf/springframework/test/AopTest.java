@@ -2,12 +2,20 @@ package io.wf.springframework.test;
 
 
 import io.wf.springframework.aop.AdvisedSupport;
+import io.wf.springframework.aop.ClassFilter;
 import io.wf.springframework.aop.MethodMatcher;
 import io.wf.springframework.aop.TargetSource;
-import io.wf.springframework.aop.appectj.AspectJExpressionPointcut;
+import io.wf.springframework.aop.aspectj.AspectJExpressionPointcut;
+import io.wf.springframework.aop.aspectj.AspectJExpressionPointcutAdvisor;
 import io.wf.springframework.aop.framework.Cglib2AopProxy;
 import io.wf.springframework.aop.framework.JdkDynamicAopProxy;
+import io.wf.springframework.aop.framework.ProxyFactory;
 import io.wf.springframework.aop.framework.ReflectiveMethodInvocation;
+import io.wf.springframework.aop.framework.adapter.MethodBeforeAdviceInterceptor;
+import io.wf.springframework.context.support.ClassPathXmlApplicationContext;
+import io.wf.springframework.test.bean.IUserService;
+import io.wf.springframework.test.bean.UserService;
+import io.wf.springframework.test.bean.UserServiceBeforeAdvice;
 import io.wf.springframework.test.proxy.IProxyService;
 import io.wf.springframework.test.proxy.ProxyService;
 import io.wf.springframework.test.proxy.ProxyServiceInterceptor;
@@ -71,6 +79,30 @@ public class AopTest {
     }
 
     @Test
+    public void test_advisor() {
+        // 目标对象
+        IUserService userService = new UserService();
+
+        AspectJExpressionPointcutAdvisor advisor = new AspectJExpressionPointcutAdvisor();
+        advisor.setExpression("execution(* io.wf.springframework.test.bean.IUserService.*(..))");
+        advisor.setAdvice(new MethodBeforeAdviceInterceptor(new UserServiceBeforeAdvice()));
+
+        ClassFilter classFilter = advisor.getPointcut().getClassFilter();
+        if (classFilter.matches(userService.getClass())) {
+            AdvisedSupport advisedSupport = new AdvisedSupport();
+
+            TargetSource targetSource = new TargetSource(userService);
+            advisedSupport.setTargetSource(targetSource);
+            advisedSupport.setMethodInterceptor((MethodInterceptor) advisor.getAdvice());
+            advisedSupport.setMethodMatcher(advisor.getPointcut().getMethodMatcher());
+            advisedSupport.setProxyTargetClass(true); // false/true，JDK动态代理、CGlib动态代理
+
+            IUserService proxy = (IUserService) new ProxyFactory(advisedSupport).getProxy();
+            System.out.println("测试结果：" + proxy.queryUserInfo());
+        }
+    }
+
+    @Test
     public void test_dynamic() {
         IProxyService proxyService = new ProxyService();
         AdvisedSupport advisedSupport = new AdvisedSupport();
@@ -87,4 +119,13 @@ public class AopTest {
         // 测试调用
         System.out.println("测试结果：" + proxy_cglib.register("花花"));
     }
+
+    @Test
+    public void test_aop_with_bean() {
+        ClassPathXmlApplicationContext applicationContext = new ClassPathXmlApplicationContext("classpath:spring.xml");
+        IUserService userService = applicationContext.getBean("userService", IUserService.class);
+        System.out.println("测试结果：" + userService.queryUserInfo());
+    }
+
+
 }
