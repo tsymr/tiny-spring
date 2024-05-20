@@ -3,7 +3,7 @@
 
     <bean id="userDao" class="io.wf.springframework.test.bean.UserDao"/>
 
-    <bean id="userService" class="io.wf.springframework.test.bean.UserService">
+    <bean id="userService" class="io.wf.springframework.test.bean.bean.UserService">
         <property name="id" value="1001"/>
         <property name="userDao" ref="userDao"/>
         <property name="company" value="搜办网络"/>

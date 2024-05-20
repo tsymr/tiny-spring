@@ -10,7 +10,7 @@
         <property name="location" value="classpath:token.properties"/>
     </bean>
 
-    <bean id="userService" class="io.wf.springframework.test.scan.UserService">
+    <bean id="userService" class="io.wf.springframework.test.scan.bean.UserService">
         <property name="token" value="${token}"/>
     </bean>
 
