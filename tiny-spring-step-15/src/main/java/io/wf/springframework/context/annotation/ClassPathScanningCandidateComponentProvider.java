@@ -1,7 +1,7 @@
 package io.wf.springframework.context.annotation;
 
-import cn.hutool.core.util.ClassUtil;
 import io.wf.springframework.beans.factory.config.BeanDefinition;
+import cn.hutool.core.util.ClassUtil;
 import io.wf.springframework.stereotype.Component;
 
 import java.util.LinkedHashSet;

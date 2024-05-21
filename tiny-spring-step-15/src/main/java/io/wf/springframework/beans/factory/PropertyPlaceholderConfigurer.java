@@ -30,11 +30,8 @@ public class PropertyPlaceholderConfigurer implements BeanFactoryPostProcessor {
     @Override
     public void postProcessBeanFactory(ConfigurableListableBeanFactory beanFactory) throws BeansException {
         try {
-            // 加载属性文件
             DefaultResourceLoader resourceLoader = new DefaultResourceLoader();
             Resource resource = resourceLoader.getResource(location);
-
-            // 占位符替换属性值
             Properties properties = new Properties();
             properties.load(resource.getInputStream());
 
@@ -43,20 +40,21 @@ public class PropertyPlaceholderConfigurer implements BeanFactoryPostProcessor {
                 BeanDefinition beanDefinition = beanFactory.getBeanDefinition(beanName);
 
                 PropertyValues propertyValues = beanDefinition.getPropertyValues();
+
                 for (PropertyValue propertyValue : propertyValues.getPropertyValues()) {
                     Object value = propertyValue.getValue();
-                    if (!(value instanceof String)) continue;
+                    if (!(value instanceof String)) {
+                        continue;
+                    }
                     value = resolvePlaceholder((String) value, properties);
                     propertyValues.addPropertyValue(new PropertyValue(propertyValue.getName(), value));
                 }
             }
-
             // 向容器中添加字符串解析器，供解析@Value注解使用
             StringValueResolver valueResolver = new PlaceholderResolvingStringValueResolver(properties);
             beanFactory.addEmbeddedValueResolver(valueResolver);
-
         } catch (IOException e) {
-            throw new BeansException("Could not load properties", e);
+            throw new RuntimeException(e);
         }
     }
 

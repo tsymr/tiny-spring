@@ -14,6 +14,7 @@ import io.wf.springframework.context.event.SimpleApplicationEventMulticaster;
 import io.wf.springframework.core.io.DefaultResourceLoader;
 
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Map;
 
 /**

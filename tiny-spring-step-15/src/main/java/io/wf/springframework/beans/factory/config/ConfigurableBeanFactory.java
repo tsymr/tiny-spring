@@ -1,5 +1,6 @@
 package io.wf.springframework.beans.factory.config;
 
+import io.wf.springframework.beans.factory.BeanFactory;
 import io.wf.springframework.beans.factory.HierarchicalBeanFactory;
 import io.wf.springframework.util.StringValueResolver;
 

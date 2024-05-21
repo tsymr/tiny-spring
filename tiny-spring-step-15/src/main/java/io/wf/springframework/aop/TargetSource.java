@@ -1,7 +1,5 @@
 package io.wf.springframework.aop;
 
-import io.wf.springframework.util.ClassUtils;
-
 /**
  * TargetSource
  *
@@ -22,15 +20,11 @@ public class TargetSource {
      * @return
      */
     public Class<?>[] getTargetClass() {
-        Class<?> clazz = this.target.getClass();
-        clazz = ClassUtils.isCglibProxyClass(clazz) ? clazz.getSuperclass() : clazz;
-        return clazz.getInterfaces();
+        return this.target.getClass().getInterfaces();
     }
 
 
     public Object getTarget(){
         return this.target;
     }
-
-
 }

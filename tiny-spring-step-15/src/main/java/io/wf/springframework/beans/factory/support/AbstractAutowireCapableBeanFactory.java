@@ -33,11 +33,6 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
             }
             // 实例化 Bean
             bean = createBeanInstance(beanDefinition, beanName, args);
-            // 实例化后判断
-            boolean continueWithPropertyPopulation = applyBeanPostProcessorsAfterInstantiation(beanName, bean);
-            if (!continueWithPropertyPopulation) {
-                return bean;
-            }
             // 在设置 Bean 属性之前，允许 BeanPostProcessor 修改属性值
             applyBeanPostProcessorsBeforeApplyingPropertyValues(beanName, bean, beanDefinition);
             // 设置 Bean 属性
@@ -60,25 +55,11 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
     }
 
 
-    private boolean applyBeanPostProcessorsAfterInstantiation(String beanName, Object bean){
-        boolean continueWithPropertyPopulation = true;
-        for(BeanPostProcessor beanPostProcessor: getBeanPostProcessors()){
-            if(beanPostProcessor instanceof InstantiationAwareBeanPostProcessor){
-                InstantiationAwareBeanPostProcessor instantiationAwareBeanPostProcessor = (InstantiationAwareBeanPostProcessor) beanPostProcessor;
-                if(!instantiationAwareBeanPostProcessor.postProcessAfterInstantiation(bean, beanName)){
-                    continueWithPropertyPopulation = false;
-                    break;
-                }
-            }
-        }
-        return continueWithPropertyPopulation;
-    }
-
     protected void applyBeanPostProcessorsBeforeApplyingPropertyValues(String beanName, Object bean, BeanDefinition beanDefinition) {
-        for (BeanPostProcessor beanPostProcessor : getBeanPostProcessors()) {
-            if (beanPostProcessor instanceof InstantiationAwareBeanPostProcessor) {
+        for(BeanPostProcessor beanPostProcessor : getBeanPostProcessors()){
+            if(beanPostProcessor instanceof  InstantiationAwareBeanPostProcessor){
                 PropertyValues pvs = ((InstantiationAwareBeanPostProcessor) beanPostProcessor).postProcessPropertyValues(beanDefinition.getPropertyValues(), bean, beanName);
-                if (null != pvs) {
+                if(null != pvs){
                     for (PropertyValue propertyValue : pvs.getPropertyValues()) {
                         beanDefinition.getPropertyValues().addPropertyValue(propertyValue);
                     }
@@ -212,8 +193,8 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
     @Override
     public Object applyBeanPostProcessorsAfterInitialization(Object existingBean, String beanName) throws BeansException {
         Object result = existingBean;
-        for (BeanPostProcessor processor : getBeanPostProcessors()) {
-            Object current = processor.postProcessAfterInitialization(result, beanName);
+        for (BeanPostProcessor beanPostProcessor : getBeanPostProcessors()) {
+            Object current = beanPostProcessor.postProcessAfterInitialization(result, beanName);
             if (null == current) {
                 return result;
             }

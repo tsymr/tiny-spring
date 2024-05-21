@@ -19,9 +19,8 @@ public class PropertyValues {
     }
 
     public PropertyValue[] getPropertyValues() {
-        return this.propertyValueList.toArray(new PropertyValue[0]);
+        return propertyValueList.toArray(new PropertyValue[0]);
     }
-
 
     public PropertyValue getPropertyValue(String propertyName) {
         for (PropertyValue propertyValue : propertyValueList) {

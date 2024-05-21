@@ -1,5 +1,7 @@
 package io.wf.springframework.aop;
 
+import lombok.Getter;
+import lombok.Setter;
 import org.aopalliance.intercept.MethodInterceptor;
 
 /**

@@ -1,6 +1,7 @@
 package io.wf.springframework.context.support;
 
 import io.wf.springframework.beans.BeansException;
+import io.wf.springframework.core.io.Resource;
 
 /**
  * ClassPathXmlApplicationContext
