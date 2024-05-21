@@ -1,11 +1,9 @@
 package io.wf.springframework.beans;
 
 /**
- * PropertyValue
+ * 
  *
- * @author Ts
- * @version 1.0.0
- * @date 2024/5/16 10:20 AM
+ * bean 属性信息
  */
 public class PropertyValue {
 
@@ -25,4 +23,5 @@ public class PropertyValue {
     public Object getValue() {
         return value;
     }
+
 }

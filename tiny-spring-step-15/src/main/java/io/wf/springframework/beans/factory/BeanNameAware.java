@@ -1,13 +1,22 @@
 package io.wf.springframework.beans.factory;
 
 /**
- * BeanNameAware
+ * Interface to be implemented by beans that want to be aware of their
+ * bean name in a bean factory. Note that it is not usually recommended
+ * that an object depend on its bean name, as this represents a potentially
+ * brittle dependence on external configuration, as well as a possibly
+ * unnecessary dependence on a Spring API.
  *
- * @author Ts
- * @version 1.0.0
- * @date 2024/5/16 10:31 AM
+ *
+ *
+ *
+ *
+ *
+ * 
  */
-public interface BeanNameAware extends Aware{
+public interface BeanNameAware extends Aware {
 
-    void setBeanName(String beanName);
+    void setBeanName(String name);
+
 }
+

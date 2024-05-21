@@ -6,7 +6,7 @@ import io.wf.springframework.stereotype.Component;
 import java.util.Random;
 
 /**
- * 作者：DerekYRC https://github.com/DerekYRC/mini-spring
+ * 
  */
 @Component("userService")
 public class UserService implements IUserService {

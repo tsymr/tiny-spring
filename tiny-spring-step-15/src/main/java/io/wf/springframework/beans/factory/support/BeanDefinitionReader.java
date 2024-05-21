@@ -5,11 +5,14 @@ import io.wf.springframework.core.io.Resource;
 import io.wf.springframework.core.io.ResourceLoader;
 
 /**
- * BeanDefinitionReader
+ * Simple interface for bean definition readers.
  *
- * @author Ts
- * @version 1.0.0
- * @date 2024/5/16 10:46 AM
+ *
+ *
+ *
+ *
+ *
+ * 
  */
 public interface BeanDefinitionReader {
 

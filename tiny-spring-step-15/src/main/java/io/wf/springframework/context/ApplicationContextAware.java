@@ -4,13 +4,21 @@ import io.wf.springframework.beans.BeansException;
 import io.wf.springframework.beans.factory.Aware;
 
 /**
- * ApplicationContextAware
+ * Interface to be implemented by any object that wishes to be notified
+ * of the {@link ApplicationContext} that it runs in.
  *
- * @author Ts
- * @version 1.0.0
- * @date 2024/5/20 2:28 PM
+ * 实现此接口，既能感知到所属的 ApplicationContext
+ *
+ *
+ *
+ *
+ *
+ *
+ * 
  */
 public interface ApplicationContextAware extends Aware {
 
     void setApplicationContext(ApplicationContext applicationContext) throws BeansException;
+
 }
+    

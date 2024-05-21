@@ -1,12 +1,22 @@
 package io.wf.springframework.beans.factory;
 
 /**
- * BeanClassLoaderAware
+ * Callback that allows a bean to be aware of the bean
+ * {@link ClassLoader class loader}; that is, the class loader used by the
+ * present bean factory to load bean classes.
  *
- * @author Ts
- * @version 1.0.0
- * @date 2024/5/16 10:31 AM
+ *
+ *
+ *
+ *
+ *
+ * 
  */
 public interface BeanClassLoaderAware extends Aware{
+
     void setBeanClassLoader(ClassLoader classLoader);
+
 }
+
+
+    

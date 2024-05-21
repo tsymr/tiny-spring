@@ -3,7 +3,7 @@ package io.wf.springframework.test.bean;
 import java.util.Random;
 
 /**
- * 作者：DerekYRC https://github.com/DerekYRC/mini-spring
+ * 
  */
 public class UserService implements IUserService {
 

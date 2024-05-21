@@ -3,11 +3,17 @@ package io.wf.springframework.context;
 import io.wf.springframework.beans.BeansException;
 
 /**
- * ConfigurableApplicationContext
+ * SPI interface to be implemented by most if not all application contexts.
+ * Provides facilities to configure an application context in addition
+ * to the application context client methods in the
+ * {@link ApplicationContext} interface.
  *
- * @author Ts
- * @version 1.0.0
- * @date 2024/5/20 2:35 PM
+ *
+ *
+ *
+ *
+ *
+ * 
  */
 public interface ConfigurableApplicationContext extends ApplicationContext {
 
@@ -18,13 +24,8 @@ public interface ConfigurableApplicationContext extends ApplicationContext {
      */
     void refresh() throws BeansException;
 
-    /**
-     * 向虚拟机注入关闭容器钩子
-     */
     void registerShutdownHook();
 
-    /**
-     * 关闭容器
-     */
     void close();
+
 }

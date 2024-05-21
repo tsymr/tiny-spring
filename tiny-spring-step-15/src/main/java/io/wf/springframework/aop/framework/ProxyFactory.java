@@ -3,11 +3,16 @@ package io.wf.springframework.aop.framework;
 import io.wf.springframework.aop.AdvisedSupport;
 
 /**
- * ProxyFactory
+ * Factory for AOP proxies for programmatic use, rather than via a bean
+ * factory. This class provides a simple way of obtaining and configuring
+ * AOP proxies in code.
+ * <p>
  *
- * @author Ts
- * @version 1.0.0
- * @date 2024/5/20 11:05 AM
+ *
+ *
+ *
+ *
+ * 
  */
 public class ProxyFactory {
 
@@ -17,16 +22,16 @@ public class ProxyFactory {
         this.advisedSupport = advisedSupport;
     }
 
-
-    public Object getProxy(){
+    public Object getProxy() {
         return createAopProxy().getProxy();
     }
-
 
     private AopProxy createAopProxy() {
         if (advisedSupport.isProxyTargetClass()) {
             return new Cglib2AopProxy(advisedSupport);
         }
+
         return new JdkDynamicAopProxy(advisedSupport);
     }
+
 }

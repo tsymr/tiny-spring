@@ -1,11 +1,9 @@
 package io.wf.springframework.beans.factory;
 
 /**
- * HierarchicalBeanFactory
- *
- * @author Ts
- * @version 1.0.0
- * @date 2024/5/16 10:23 AM
+ * Sub-interface implemented by bean factories that can be part
+ * of a hierarchy.
  */
 public interface HierarchicalBeanFactory extends BeanFactory {
+
 }

@@ -4,24 +4,21 @@ import io.wf.springframework.beans.BeansException;
 import io.wf.springframework.beans.factory.config.BeanDefinition;
 
 /**
- * BeanDefinitionRegistry
- *
- * @author Ts
- * @version 1.0.0
- * @date 2024/5/16 10:44 AM
+ * 
  */
 public interface BeanDefinitionRegistry {
 
     /**
      * 向注册表中注册 BeanDefinition
+     *
      * @param beanName
      * @param beanDefinition
      */
     void registerBeanDefinition(String beanName, BeanDefinition beanDefinition);
 
-
     /**
-     * 根据名称查询 BeanDefinition
+     * 使用Bean名称查询BeanDefinition
+     *
      * @param beanName
      * @return
      * @throws BeansException
@@ -29,15 +26,17 @@ public interface BeanDefinitionRegistry {
     BeanDefinition getBeanDefinition(String beanName) throws BeansException;
 
     /**
-     * 判断指定名称的 BeanDefinition 是否已存在
+     * 判断是否包含指定名称的BeanDefinition
      * @param beanName
      * @return
      */
     boolean containsBeanDefinition(String beanName);
 
     /**
-     * 返回注册表中所有 Bean 的名称
-     * @return
+     * Return the names of all beans defined in this registry.
+     *
+     * 返回注册表中所有的Bean名称
      */
     String[] getBeanDefinitionNames();
+
 }

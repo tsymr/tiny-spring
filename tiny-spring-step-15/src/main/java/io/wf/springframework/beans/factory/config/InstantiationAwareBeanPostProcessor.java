@@ -2,20 +2,28 @@ package io.wf.springframework.beans.factory.config;
 
 import io.wf.springframework.beans.BeansException;
 import io.wf.springframework.beans.PropertyValues;
+import io.wf.springframework.beans.factory.annotation.AutowiredAnnotationBeanPostProcessor;
 
 /**
- * InstantiationAwareBeanPostProcessor
+ * Subinterface of {@link BeanPostProcessor} that adds a before-instantiation callback,
+ * and a callback after instantiation but before explicit properties are set or
+ * autowiring occurs.
+ * <p>
  *
- * @author Ts
- * @version 1.0.0
- * @date 2024/5/16 10:42 AM
+ *
+ *
+ *
+ *
+ * 
  */
 public interface InstantiationAwareBeanPostProcessor extends BeanPostProcessor {
 
     /**
-     * 在 Bean 对象执行初始化方法前，执行此方法
-     * 主要作用在于目标对象的实例化过程中需要处理的事情，
-     * 包括实例化对象的前后过程以及实例的属性设置
+     * Apply this BeanPostProcessor <i>before the target bean gets instantiated</i>.
+     * The returned bean object may be a proxy to use instead of the target bean,
+     * effectively suppressing default instantiation of the target bean.
+     * <p>
+     * 在 Bean 对象执行初始化方法之前，执行此方法
      *
      * @param beanClass
      * @param beanName
@@ -24,8 +32,27 @@ public interface InstantiationAwareBeanPostProcessor extends BeanPostProcessor {
      */
     Object postProcessBeforeInstantiation(Class<?> beanClass, String beanName) throws BeansException;
 
+    /**
+     * Perform operations after the bean has been instantiated, via a constructor or factory method,
+     * but before Spring property population (from explicit properties or autowiring) occurs.
+     * <p>This is the ideal callback for performing field injection on the given bean instance.
+     * See Spring's own {@link AutowiredAnnotationBeanPostProcessor}
+     * for a typical example.
+     * <p>
+     * 在 Bean 对象执行初始化方法之后，执行此方法
+     *
+     * @param bean
+     * @param beanName
+     * @return
+     * @throws BeansException
+     */
+    boolean postProcessAfterInstantiation(Object bean, String beanName) throws BeansException;
 
     /**
+     * Post-process the given property values before the factory applies them
+     * to the given bean. Allows for checking whether all dependencies have been
+     * satisfied, for example based on a "Required" annotation on bean property setters.
+     * <p>
      * 在 Bean 对象实例化完成后，设置属性操作之前执行此方法
      *
      * @param pvs
@@ -35,4 +62,5 @@ public interface InstantiationAwareBeanPostProcessor extends BeanPostProcessor {
      * @throws BeansException
      */
     PropertyValues postProcessPropertyValues(PropertyValues pvs, Object bean, String beanName) throws BeansException;
+
 }

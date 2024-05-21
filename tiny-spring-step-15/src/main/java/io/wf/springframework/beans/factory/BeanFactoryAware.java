@@ -3,13 +3,20 @@ package io.wf.springframework.beans.factory;
 import io.wf.springframework.beans.BeansException;
 
 /**
- * BeanFactoryAware
+ * Interface to be implemented by beans that wish to be aware of their
+ * owning {@link BeanFactory}.
  *
- * @author Ts
- * @version 1.0.0
- * @date 2024/5/16 10:30 AM
+ * 实现此接口，既能感知到所属的 BeanFactory
+ *
+ *
+ *
+ *
+ *
+ *
+ * 
  */
 public interface BeanFactoryAware extends Aware {
 
-    void setBeanFactory(BeanFactory beanFactory) throws BeansException;
+   void setBeanFactory(BeanFactory beanFactory) throws BeansException;
+
 }

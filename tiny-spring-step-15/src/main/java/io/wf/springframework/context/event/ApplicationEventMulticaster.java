@@ -4,16 +4,19 @@ import io.wf.springframework.context.ApplicationEvent;
 import io.wf.springframework.context.ApplicationListener;
 
 /**
- * ApplicationEventMulticaster
+ * Interface to be implemented by objects that can manage a number of
+ * {@link ApplicationListener} objects, and publish events to them.
  *
- * Application 事件组播器
+ * 事件广播器
  *
- * @author Ts
- * @version 1.0.0
- * @date 2024/5/20 2:39 PM
+ *
+ *
+ *
+ *
+ *
+ * 
  */
 public interface ApplicationEventMulticaster {
-
 
     /**
      * Add a listener to be notified of all events.
@@ -32,4 +35,5 @@ public interface ApplicationEventMulticaster {
      * @param event the event to multicast
      */
     void multicastEvent(ApplicationEvent event);
+
 }

@@ -1,24 +1,17 @@
 package io.wf.springframework.beans.factory.config;
 
 import io.wf.springframework.beans.PropertyValues;
-import lombok.Getter;
-import lombok.Setter;
 
 /**
- * BeanDefinition
- *
- * @author Ts
- * @version 1.0.0
- * @date 2024/5/16 10:25 AM
+ * 
  */
-@Getter
-@Setter
 public class BeanDefinition {
-    String SCOPE_SINGLETON = "SCOPE_SINGLETON";
 
-    String SCOPE_PROTOTYPE = "SCOPE_PROTOTYPE";
+    String SCOPE_SINGLETON = ConfigurableBeanFactory.SCOPE_SINGLETON;
 
-    private Class<?> beanClass;
+    String SCOPE_PROTOTYPE = ConfigurableBeanFactory.SCOPE_PROTOTYPE;
+
+    private Class beanClass;
 
     private PropertyValues propertyValues;
 
@@ -26,24 +19,64 @@ public class BeanDefinition {
 
     private String destroyMethodName;
 
-    private String scope;
+    private String scope = SCOPE_SINGLETON;
 
     private boolean singleton = true;
 
     private boolean prototype = false;
 
-    public BeanDefinition(Class<?> beanClass) {
+    public BeanDefinition(Class beanClass) {
         this(beanClass, null);
     }
 
-    public BeanDefinition(Class<?> beanClass, PropertyValues propertyValues) {
+    public BeanDefinition(Class beanClass, PropertyValues propertyValues) {
         this.beanClass = beanClass;
-        this.propertyValues = propertyValues == null ? new PropertyValues() : propertyValues;
+        this.propertyValues = propertyValues != null ? propertyValues : new PropertyValues();
     }
 
-    public void setScope(String scope){
+    public void setScope(String scope) {
         this.scope = scope;
-        this.singleton = scope.equals(SCOPE_SINGLETON);
-        this.prototype = scope.equals(SCOPE_PROTOTYPE);
+        this.singleton = SCOPE_SINGLETON.equals(scope);
+        this.prototype = SCOPE_PROTOTYPE.equals(scope);
+    }
+
+    public boolean isSingleton() {
+        return singleton;
+    }
+
+    public boolean isPrototype() {
+        return prototype;
+    }
+
+    public Class getBeanClass() {
+        return beanClass;
+    }
+
+    public void setBeanClass(Class beanClass) {
+        this.beanClass = beanClass;
+    }
+
+    public PropertyValues getPropertyValues() {
+        return propertyValues;
+    }
+
+    public void setPropertyValues(PropertyValues propertyValues) {
+        this.propertyValues = propertyValues;
+    }
+
+    public String getInitMethodName() {
+        return initMethodName;
+    }
+
+    public void setInitMethodName(String initMethodName) {
+        this.initMethodName = initMethodName;
+    }
+
+    public String getDestroyMethodName() {
+        return destroyMethodName;
+    }
+
+    public void setDestroyMethodName(String destroyMethodName) {
+        this.destroyMethodName = destroyMethodName;
     }
 }

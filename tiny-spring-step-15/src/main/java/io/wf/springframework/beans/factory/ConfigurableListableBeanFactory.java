@@ -6,26 +6,21 @@ import io.wf.springframework.beans.factory.config.BeanDefinition;
 import io.wf.springframework.beans.factory.config.ConfigurableBeanFactory;
 
 /**
- * ConfigurableListableBeanFactory
+ * Configuration interface to be implemented by most listable bean factories.
+ * In addition to {@link ConfigurableBeanFactory}, it provides facilities to
+ * analyze and modify bean definitions, and to pre-instantiate singletons.
  *
- * @author Ts
- * @version 1.0.0
- * @date 2024/5/16 10:38 AM
+ *
+ *
+ *
+ *
+ *
+ * 
  */
-public interface ConfigurableListableBeanFactory extends ConfigurableBeanFactory, ListableBeanFactory , AutowireCapableBeanFactory {
+public interface ConfigurableListableBeanFactory extends ListableBeanFactory, AutowireCapableBeanFactory, ConfigurableBeanFactory {
 
-    /**
-     * 根据名称获取 Bean 定义
-     * @param beanName
-     * @return
-     * @throws BeansException
-     */
     BeanDefinition getBeanDefinition(String beanName) throws BeansException;
 
-    /**
-     * 提前实例化单例对象
-     * @throws BeansException
-     */
     void preInstantiateSingletons() throws BeansException;
 
 }

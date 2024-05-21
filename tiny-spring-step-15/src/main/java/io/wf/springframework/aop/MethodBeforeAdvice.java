@@ -3,25 +3,29 @@ package io.wf.springframework.aop;
 import java.lang.reflect.Method;
 
 /**
- * MethodBeforeAdvice
- * <p>
  * Advice invoked before a method is invoked. Such advices cannot
  * prevent the method call proceeding, unless they throw a Throwable.
+ * <p>
  *
- * @author Ts
- * @version 1.0.0
- * @date 2024/5/20 10:17 AM
+ *
+ *
+ *
+ *
+ * 
  */
-public interface MethodBeforeAdvice {
+public interface MethodBeforeAdvice extends BeforeAdvice {
 
     /**
-     * 调用给定方法之前的回调。
+     * Callback before a given method is invoked.
      *
-     * @param method 被调用的方法
-     * @param args   方法的参数
-     * @param target 方法调用的目标。可能为<code>null</code>。
-     * @throws Throwable 如果此对象希望中止调用，任何抛出的异常将会返回给调用者，
-     *                   如果方法签名允许的话。否则，异常将会被包装为一个运行时异常。
+     * @param method method being invoked
+     * @param args   arguments to the method
+     * @param target target of the method invocation. May be <code>null</code>.
+     * @throws Throwable if this object wishes to abort the call.
+     *                   Any exception thrown will be returned to the caller if it's
+     *                   allowed by the method signature. Otherwise the exception
+     *                   will be wrapped as a runtime exception.
      */
     void before(Method method, Object[] args, Object target) throws Throwable;
+
 }

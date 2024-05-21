@@ -3,11 +3,9 @@ package io.wf.springframework.stereotype;
 import java.lang.annotation.*;
 
 /**
- * Component
- *
- * @author Ts
- * @version 1.0.0
- * @date 2024/5/16 10:11 AM
+ * Indicates that an annotated class is a "component".
+ * Such classes are considered as candidates for auto-detection
+ * when using annotation-based configuration and classpath scanning.
  */
 @Target(ElementType.TYPE)
 @Retention(RetentionPolicy.RUNTIME)
@@ -15,4 +13,5 @@ import java.lang.annotation.*;
 public @interface Component {
 
     String value() default "";
+
 }

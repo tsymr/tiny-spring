@@ -1,13 +1,23 @@
 package io.wf.springframework.aop;
 
 /**
- * ClassFilter
+ * Filter that restricts matching of a pointcut or introduction to
+ * a given set of target classes.
  *
- * @author Ts
- * @version 1.0.0
- * @date 2024/5/20 9:50 AM
+ *
+ *
+ *
+ *
+ *
+ * 
  */
 public interface ClassFilter {
 
+    /**
+     * Should the pointcut apply to the given interface or target class?
+     * @param clazz the candidate target class
+     * @return whether the advice should apply to the given target class
+     */
     boolean matches(Class<?> clazz);
+
 }

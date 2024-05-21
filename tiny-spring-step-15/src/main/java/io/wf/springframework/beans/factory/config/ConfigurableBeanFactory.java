@@ -5,25 +5,23 @@ import io.wf.springframework.beans.factory.HierarchicalBeanFactory;
 import io.wf.springframework.util.StringValueResolver;
 
 /**
- * ConfigurableBeanFactory
- *
- * @author Ts
- * @version 1.0.0
- * @date 2024/5/16 10:36 AM
+ * Configuration interface to be implemented by most bean factories. Provides
+ * facilities to configure a bean factory, in addition to the bean factory
+ * client methods in the {@link BeanFactory}
+ * interface.
  */
 public interface ConfigurableBeanFactory extends HierarchicalBeanFactory, SingletonBeanRegistry {
 
-    /**
-     * 添加 BeanPostProcessor 接口实现类对象
-     * @param beanPostProcessor
-     */
+    String SCOPE_SINGLETON = "singleton";
+
+    String SCOPE_PROTOTYPE = "prototype";
+
     void addBeanPostProcessor(BeanPostProcessor beanPostProcessor);
 
     /**
      * 销毁单例对象
      */
     void destroySingletons();
-
 
     /**
      * Add a String resolver for embedded values such as annotation attributes.
@@ -39,4 +37,5 @@ public interface ConfigurableBeanFactory extends HierarchicalBeanFactory, Single
      * @since 3.0
      */
     String resolveEmbeddedValue(String value);
+
 }

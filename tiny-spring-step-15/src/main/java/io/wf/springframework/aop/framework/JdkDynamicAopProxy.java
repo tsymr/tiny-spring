@@ -8,11 +8,17 @@ import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
 
 /**
- * JdkDynamicAopProxy
+ * JDK-based {@link AopProxy} implementation for the Spring AOP framework,
+ * based on JDK {@link Proxy dynamic proxies}.
+ * <p>
+ * JDK 动态代理
+ * <p>
  *
- * @author Ts
- * @version 1.0.0
- * @date 2024/5/20 10:48 AM
+ *
+ *
+ *
+ *
+ * 
  */
 public class JdkDynamicAopProxy implements AopProxy, InvocationHandler {
 
@@ -29,11 +35,11 @@ public class JdkDynamicAopProxy implements AopProxy, InvocationHandler {
 
     @Override
     public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
-        if(advised.getMethodMatcher().matches(method, advised.getTargetSource().getTarget().getClass())){
+        if (advised.getMethodMatcher().matches(method, advised.getTargetSource().getTarget().getClass())) {
             MethodInterceptor methodInterceptor = advised.getMethodInterceptor();
             return methodInterceptor.invoke(new ReflectiveMethodInvocation(advised.getTargetSource().getTarget(), method, args));
         }
         return method.invoke(advised.getTargetSource().getTarget(), args);
     }
-}
 
+}

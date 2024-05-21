@@ -5,11 +5,14 @@ import io.wf.springframework.context.ApplicationEvent;
 import io.wf.springframework.context.ApplicationListener;
 
 /**
- * SimpleApplicationEventMulticaster
+ * Simple implementation of the {@link ApplicationEventMulticaster} interface.
+ * <p>
  *
- * @author Ts
- * @version 1.0.0
- * @date 2024/5/20 3:00 PM
+ *
+ *
+ *
+ *
+ * 
  */
 public class SimpleApplicationEventMulticaster extends AbstractApplicationEventMulticaster {
 
@@ -19,9 +22,10 @@ public class SimpleApplicationEventMulticaster extends AbstractApplicationEventM
 
     @SuppressWarnings("unchecked")
     @Override
-    public void multicastEvent(ApplicationEvent event) {
-        for (ApplicationListener listener : getApplicationListeners(event)) {
+    public void multicastEvent(final ApplicationEvent event) {
+        for (final ApplicationListener listener : getApplicationListeners(event)) {
             listener.onApplicationEvent(event);
         }
     }
+
 }

@@ -4,11 +4,15 @@ import io.wf.springframework.core.io.DefaultResourceLoader;
 import io.wf.springframework.core.io.ResourceLoader;
 
 /**
- * AbstractBeanDefinitionReader
+ * Abstract base class for bean definition readers which implement
+ * the {@link BeanDefinitionReader} interface.
+ * <p>
  *
- * @author Ts
- * @version 1.0.0
- * @date 2024/5/16 2:18 PM
+ *
+ *
+ *
+ *
+ * 
  */
 public abstract class AbstractBeanDefinitionReader implements BeanDefinitionReader {
 
@@ -16,8 +20,8 @@ public abstract class AbstractBeanDefinitionReader implements BeanDefinitionRead
 
     private ResourceLoader resourceLoader;
 
-    public AbstractBeanDefinitionReader(BeanDefinitionRegistry registry) {
-       this(registry, new DefaultResourceLoader());
+    protected AbstractBeanDefinitionReader(BeanDefinitionRegistry registry) {
+        this(registry, new DefaultResourceLoader());
     }
 
     public AbstractBeanDefinitionReader(BeanDefinitionRegistry registry, ResourceLoader resourceLoader) {
@@ -34,4 +38,5 @@ public abstract class AbstractBeanDefinitionReader implements BeanDefinitionRead
     public ResourceLoader getResourceLoader() {
         return resourceLoader;
     }
+
 }

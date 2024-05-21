@@ -1,11 +1,14 @@
 package io.wf.springframework.context.event;
 
 /**
- * ContextRefreshedEvent
+ * Event raised when an <code>ApplicationContext</code> gets initialized or refreshed.
  *
- * @author Ts
- * @version 1.0.0
- * @date 2024/5/20 3:00 PM
+ *
+ *
+ *
+ *
+ *
+ * 
  */
 public class ContextRefreshedEvent extends ApplicationContextEvent{
     /**
@@ -17,4 +20,5 @@ public class ContextRefreshedEvent extends ApplicationContextEvent{
     public ContextRefreshedEvent(Object source) {
         super(source);
     }
+
 }

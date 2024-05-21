@@ -1,17 +1,25 @@
 package io.wf.springframework.beans.factory;
 
 /**
- * FactoryBean
+ * Interface to be implemented by objects used within a {@link BeanFactory}
+ * which are themselves factories. If a bean implements this interface,
+ * it is used as a factory for an object to expose, not directly as a bean
+ * instance that will be exposed itself.
+ * @param <T>
  *
- * @author Ts
- * @version 1.0.0
- * @date 2024/5/16 10:23 AM
+ *
+ *
+ *
+ *
+ *
+ * 
  */
-public interface FactoryBean <T>{
+public interface FactoryBean<T> {
 
     T getObject() throws Exception;
 
     Class<?> getObjectType();
 
     boolean isSingleton();
+
 }

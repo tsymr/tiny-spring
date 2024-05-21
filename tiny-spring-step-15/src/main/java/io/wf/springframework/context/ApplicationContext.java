@@ -5,13 +5,18 @@ import io.wf.springframework.beans.factory.ListableBeanFactory;
 import io.wf.springframework.core.io.ResourceLoader;
 
 /**
- * ApplicationContext
+ * Central interface to provide configuration for an application.
+ * This is read-only while the application is running, but may be
+ * reloaded if the implementation supports this.
+ * <p>
+ * 应用上下文
+ * <p>
  *
- * @author Ts
- * @version 1.0.0
- * @date 2024/5/20 2:28 PM
+ *
+ *
+ *
+ *
+ * 
  */
-public interface ApplicationContext extends ListableBeanFactory, HierarchicalBeanFactory , ResourceLoader, ApplicationEventPublisher {
-
+public interface ApplicationContext extends ListableBeanFactory, HierarchicalBeanFactory, ResourceLoader, ApplicationEventPublisher {
 }
-

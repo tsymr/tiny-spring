@@ -9,7 +9,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * 作者：DerekYRC https://github.com/DerekYRC/mini-spring
+ * 
  */
 public class ApiTest {
 

@@ -6,11 +6,7 @@ import io.wf.springframework.context.ApplicationContext;
 import io.wf.springframework.context.ApplicationContextAware;
 
 /**
- * ApplicationContextAwareProcessor
- *
- * @author Ts
- * @version 1.0.0
- * @date 2024/5/20 3:13 PM
+ * 
  */
 public class ApplicationContextAwareProcessor implements BeanPostProcessor {
 
@@ -22,7 +18,7 @@ public class ApplicationContextAwareProcessor implements BeanPostProcessor {
 
     @Override
     public Object postProcessBeforeInitialization(Object bean, String beanName) throws BeansException {
-        if(bean instanceof ApplicationContextAware) {
+        if (bean instanceof ApplicationContextAware){
             ((ApplicationContextAware) bean).setApplicationContext(applicationContext);
         }
         return bean;
@@ -32,4 +28,5 @@ public class ApplicationContextAwareProcessor implements BeanPostProcessor {
     public Object postProcessAfterInitialization(Object bean, String beanName) throws BeansException {
         return bean;
     }
+
 }

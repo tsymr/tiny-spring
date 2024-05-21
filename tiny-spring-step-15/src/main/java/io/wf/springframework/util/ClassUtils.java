@@ -1,42 +1,36 @@
 package io.wf.springframework.util;
 
-/**
- * ClassUtils
- *
- * @author Ts
- * @version 1.0.0
- * @date 2024/5/16 9:20 AM
- */
 public class ClassUtils {
 
     public static ClassLoader getDefaultClassLoader() {
         ClassLoader cl = null;
         try {
             cl = Thread.currentThread().getContextClassLoader();
-        }catch (Throwable ex) {
-
+        }
+        catch (Throwable ex) {
+            // Cannot access thread context ClassLoader - falling back to system class loader...
         }
         if (cl == null) {
+            // No thread context class loader -> use class loader of this class.
             cl = ClassUtils.class.getClassLoader();
         }
         return cl;
     }
 
     /**
-     * 检查指定的类是否为cglib生成的类。
-     * @param clazz
-     * @return
+     * Check whether the specified class is a CGLIB-generated class.
+     * @param clazz the class to check
      */
-    public static  boolean isCglibProxyClass(Class<?> clazz){
-        return  clazz != null && isCglibProxyClassName(clazz.getName());
+    public static boolean isCglibProxyClass(Class<?> clazz) {
+        return (clazz != null && isCglibProxyClassName(clazz.getName()));
     }
 
     /**
-     * 检查指定的类名是否为cglib生成的类。
-     * @param className
-     * @return
+     * Check whether the specified class name is a CGLIB-generated class.
+     * @param className the class name to check
      */
     public static boolean isCglibProxyClassName(String className) {
-        return className != null && className.contains("$$");
+        return (className != null && className.contains("$$"));
     }
+
 }

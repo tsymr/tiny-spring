@@ -1,16 +1,20 @@
 package io.wf.springframework.context;
 
-
 import java.util.EventObject;
 
 /**
- * ApplicationEvent
+ * Class to be extended by all application events. Abstract as it
+ * doesn't make sense for generic events to be published directly.
  *
- * @author Ts
- * @version 1.0.0
- * @date 2024/5/20 2:29 PM
+ *
+ *
+ *
+ *
+ *
+ * 
  */
-public class ApplicationEvent extends EventObject {
+public abstract class ApplicationEvent extends EventObject {
+
     /**
      * Constructs a prototypical Event.
      *
@@ -20,4 +24,5 @@ public class ApplicationEvent extends EventObject {
     public ApplicationEvent(Object source) {
         super(source);
     }
+
 }

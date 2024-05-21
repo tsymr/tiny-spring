@@ -4,11 +4,17 @@ import io.wf.springframework.beans.BeansException;
 import io.wf.springframework.beans.factory.ConfigurableListableBeanFactory;
 
 /**
- * BeanFactoryPostProcessor
+ * Allows for custom modification of an application context's bean definitions,
+ * adapting the bean property values of the context's underlying bean factory.
  *
- * @author Ts
- * @version 1.0.0
- * @date 2024/5/16 10:40 AM
+ * 允许自定义修改 BeanDefinition 属性信息
+ *
+ *
+ *
+ *
+ *
+ *
+ * 
  */
 public interface BeanFactoryPostProcessor {
 
@@ -19,4 +25,5 @@ public interface BeanFactoryPostProcessor {
      * @throws BeansException
      */
     void postProcessBeanFactory(ConfigurableListableBeanFactory beanFactory) throws BeansException;
+
 }

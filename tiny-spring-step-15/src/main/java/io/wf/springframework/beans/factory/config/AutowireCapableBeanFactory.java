@@ -4,16 +4,16 @@ import io.wf.springframework.beans.BeansException;
 import io.wf.springframework.beans.factory.BeanFactory;
 
 /**
- * AutowireCapableBeanFactory
- *
- * @author Ts
- * @version 1.0.0
- * @date 2024/5/16 10:34 AM
+ * Extension of the {@link BeanFactory}
+ * interface to be implemented by bean factories that are capable of
+ * autowiring, provided that they want to expose this functionality for
+ * existing bean instances.
  */
-public interface AutowireCapableBeanFactory  extends BeanFactory {
+public interface AutowireCapableBeanFactory extends BeanFactory {
 
     /**
-     * 执行 BeanPostProcessor 接口实现类 postProcessBeforeInitialization 方法
+     * 执行 BeanPostProcessors 接口实现类的 postProcessBeforeInitialization 方法
+     *
      * @param existingBean
      * @param beanName
      * @return
@@ -22,11 +22,13 @@ public interface AutowireCapableBeanFactory  extends BeanFactory {
     Object applyBeanPostProcessorsBeforeInitialization(Object existingBean, String beanName) throws BeansException;
 
     /**
-     * 执行 BeanPostProcess 接口实现类的 postProcessAfterInitialization 方法
+     * 执行 BeanPostProcessors 接口实现类的 postProcessorsAfterInitialization 方法
+     *
      * @param existingBean
      * @param beanName
      * @return
      * @throws BeansException
      */
     Object applyBeanPostProcessorsAfterInitialization(Object existingBean, String beanName) throws BeansException;
+
 }

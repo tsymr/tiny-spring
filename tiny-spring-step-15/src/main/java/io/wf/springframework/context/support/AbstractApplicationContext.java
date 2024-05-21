@@ -12,44 +12,59 @@ import io.wf.springframework.context.event.ContextClosedEvent;
 import io.wf.springframework.context.event.ContextRefreshedEvent;
 import io.wf.springframework.context.event.SimpleApplicationEventMulticaster;
 import io.wf.springframework.core.io.DefaultResourceLoader;
+import io.wf.springframework.context.ApplicationContext;
 
 import java.util.Collection;
-import java.util.Collections;
 import java.util.Map;
 
 /**
- * AbstractApplicationContext
+ * Abstract implementation of the {@link ApplicationContext}
+ * interface. Doesn't mandate the type of storage used for configuration; simply
+ * implements common context functionality. Uses the Template Method design pattern,
+ * requiring concrete subclasses to implement abstract methods.
+ * <p>
+ * 抽象应用上下文
+ * <p>
  *
- * @author Ts
- * @version 1.0.0
- * @date 2024/5/20 3:02 PM
+ *
+ *
+ *
+ *
+ * 
  */
 public abstract class AbstractApplicationContext extends DefaultResourceLoader implements ConfigurableApplicationContext {
 
-    private static final String APPLICATION_EVENT_MULTICASTER_BEAN_NAME = "applicationEventMulticaster";
+    public static final String APPLICATION_EVENT_MULTICASTER_BEAN_NAME = "applicationEventMulticaster";
 
     private ApplicationEventMulticaster applicationEventMulticaster;
 
-
     @Override
     public void refresh() throws BeansException {
-        // 创建 BeanFactory， 并加载 BeanDefinition
+        // 1. 创建 BeanFactory，并加载 BeanDefinition
         refreshBeanFactory();
-        // 获取 BeanFactory
+
+        // 2. 获取 BeanFactory
         ConfigurableListableBeanFactory beanFactory = getBeanFactory();
-        // 添加 ApplicationContextAwareProcessor，让继承自 ApplicationContextAware 的 Bean 对象都能感知所属的 ApplicationContext
+
+        // 3. 添加 ApplicationContextAwareProcessor，让继承自 ApplicationContextAware 的 Bean 对象都能感知所属的 ApplicationContext
         beanFactory.addBeanPostProcessor(new ApplicationContextAwareProcessor(this));
-        // 在 Bean 实例化之前，执行 BeanFactoryPostProcessor 修改 BeanDefinition
+
+        // 4. 在 Bean 实例化之前，执行 BeanFactoryPostProcessor (Invoke factory processors registered as beans in the context.)
         invokeBeanFactoryPostProcessors(beanFactory);
-        // 提前注册 BeanPostProcessor
+
+        // 5. BeanPostProcessor 需要提前于其他 Bean 对象实例化之前执行注册操作
         registerBeanPostProcessors(beanFactory);
-        // 初始化事件发布者
+
+        // 6. 初始化事件发布者
         initApplicationEventMulticaster();
-        // 注册事件监听器
+
+        // 7. 注册事件监听器
         registerListeners();
-        // 提前实例化单例 Bean 对象
+
+        // 8. 提前实例化单例Bean对象
         beanFactory.preInstantiateSingletons();
-        // 发布容器刷新事件
+
+        // 9. 发布容器刷新完成事件
         finishRefresh();
     }
 
@@ -57,10 +72,11 @@ public abstract class AbstractApplicationContext extends DefaultResourceLoader i
 
     protected abstract ConfigurableListableBeanFactory getBeanFactory();
 
-
     private void invokeBeanFactoryPostProcessors(ConfigurableListableBeanFactory beanFactory) {
-        Collection<BeanFactoryPostProcessor> beanFactoryPostProcessors = beanFactory.getBeansOfType(BeanFactoryPostProcessor.class).values();
-        beanFactoryPostProcessors.forEach(beanFactoryPostProcessor -> beanFactoryPostProcessor.postProcessBeanFactory(beanFactory));
+        Map<String, BeanFactoryPostProcessor> beanFactoryPostProcessorMap = beanFactory.getBeansOfType(BeanFactoryPostProcessor.class);
+        for (BeanFactoryPostProcessor beanFactoryPostProcessor : beanFactoryPostProcessorMap.values()) {
+            beanFactoryPostProcessor.postProcessBeanFactory(beanFactory);
+        }
     }
 
     private void registerBeanPostProcessors(ConfigurableListableBeanFactory beanFactory) {
@@ -131,7 +147,9 @@ public abstract class AbstractApplicationContext extends DefaultResourceLoader i
     public void close() {
         // 发布容器关闭事件
         publishEvent(new ContextClosedEvent(this));
+
         // 执行销毁单例bean的销毁方法
         getBeanFactory().destroySingletons();
     }
+
 }

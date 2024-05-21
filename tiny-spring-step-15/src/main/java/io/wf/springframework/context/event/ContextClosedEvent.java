@@ -1,13 +1,17 @@
 package io.wf.springframework.context.event;
 
 /**
- * ContextClosedEvent
+ * Event raised when an <code>ApplicationContext</code> gets closed.
  *
- * @author Ts
- * @version 1.0.0
- * @date 2024/5/20 2:59 PM
+ *
+ *
+ *
+ *
+ *
+ * 
  */
-public class ContextClosedEvent extends ApplicationContextEvent {
+public class ContextClosedEvent extends ApplicationContextEvent{
+
     /**
      * Constructs a prototypical Event.
      *
@@ -17,4 +21,5 @@ public class ContextClosedEvent extends ApplicationContextEvent {
     public ContextClosedEvent(Object source) {
         super(source);
     }
+
 }

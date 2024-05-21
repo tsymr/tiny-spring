@@ -3,17 +3,23 @@ package io.wf.springframework.context;
 import java.util.EventListener;
 
 /**
- * ApplicationListener
+ * Interface to be implemented by application event listeners.
+ * Based on the standard <code>java.util.EventListener</code> interface
+ * for the Observer design pattern.
  *
- * @author Ts
- * @version 1.0.0
- * @date 2024/5/20 2:36 PM
+ *
+ *
+ *
+ *
+ *
+ * 
  */
 public interface ApplicationListener<E extends ApplicationEvent> extends EventListener {
 
     /**
-     * 处理 application 事件。
+     * Handle an application event.
      * @param event the event to respond to
      */
     void onApplicationEvent(E event);
+
 }

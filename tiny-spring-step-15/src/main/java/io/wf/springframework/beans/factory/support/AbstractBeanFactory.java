@@ -12,22 +12,72 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * AbstractBeanFactory
- *
- * @author Ts
- * @version 1.0.0
- * @date 2024/5/16 10:52 AM
+ * 
+ * <p>
+ * BeanDefinition注册表接口
  */
-public abstract class AbstractBeanFactory extends FactoryBeanRegistrySupport  implements ConfigurableBeanFactory {
+public abstract class AbstractBeanFactory extends FactoryBeanRegistrySupport implements ConfigurableBeanFactory {
 
+    /**
+     * ClassLoader to resolve bean class names with, if necessary
+     */
     private ClassLoader beanClassLoader = ClassUtils.getDefaultClassLoader();
 
-    private final List<BeanPostProcessor> beanPostProcessors = new ArrayList<>();
+    /**
+     * BeanPostProcessors to apply in createBean
+     */
+    private final List<BeanPostProcessor> beanPostProcessors = new ArrayList<BeanPostProcessor>();
 
     /**
      * String resolvers to apply e.g. to annotation attribute values
      */
     private final List<StringValueResolver> embeddedValueResolvers = new ArrayList<>();
+
+    @Override
+    public Object getBean(String name) throws BeansException {
+        return doGetBean(name, null);
+    }
+
+    @Override
+    public Object getBean(String name, Object... args) throws BeansException {
+        return doGetBean(name, args);
+    }
+
+    @Override
+    public <T> T getBean(String name, Class<T> requiredType) throws BeansException {
+        return (T) getBean(name);
+    }
+
+    protected <T> T doGetBean(final String name, final Object[] args) {
+        Object sharedInstance = getSingleton(name);
+        if (sharedInstance != null) {
+            // 如果是 FactoryBean，则需要调用 FactoryBean#getObject
+            return (T) getObjectForBeanInstance(sharedInstance, name);
+        }
+
+        BeanDefinition beanDefinition = getBeanDefinition(name);
+        Object bean = createBean(name, beanDefinition, args);
+        return (T) getObjectForBeanInstance(bean, name);
+    }
+
+    private Object getObjectForBeanInstance(Object beanInstance, String beanName) {
+        if (!(beanInstance instanceof FactoryBean)) {
+            return beanInstance;
+        }
+
+        Object object = getCachedObjectForFactoryBean(beanName);
+
+        if (object == null) {
+            FactoryBean<?> factoryBean = (FactoryBean<?>) beanInstance;
+            object = getObjectFromFactoryBean(factoryBean, beanName);
+        }
+
+        return object;
+    }
+
+    protected abstract BeanDefinition getBeanDefinition(String beanName) throws BeansException;
+
+    protected abstract Object createBean(String beanName, BeanDefinition beanDefinition, Object[] args) throws BeansException;
 
     @Override
     public void addBeanPostProcessor(BeanPostProcessor beanPostProcessor) {
@@ -41,63 +91,24 @@ public abstract class AbstractBeanFactory extends FactoryBeanRegistrySupport  im
     }
 
     @Override
-    public Object getBean(String name) throws BeansException {
-       return doGetBean(name, null);
-    }
-
-    @Override
-    public <T> T getBean(String name, Class<T> requiredType) throws BeansException {
-        return (T) getBean(name);
-    }
-
-    @Override
-    public Object getBean(String name, Object... args) throws BeansException {
-        return doGetBean(name, args);
-    }
-
-    private <T>T doGetBean(final String name, final Object[] args) throws BeansException {
-        Object sharedInstance = getSingleton(name);
-        if(sharedInstance != null) {
-            return (T) getObjectFormBeanInstance(sharedInstance, name);
-        }
-        BeanDefinition beanDefinition = getBeanDefinition(name);
-        Object bean = createBean(name, beanDefinition, args);
-        return (T) getObjectFormBeanInstance(bean, name);
-    }
-
-
-    private Object getObjectFormBeanInstance(Object beanInstance, String beanName){
-        if(! (beanInstance instanceof FactoryBean)){
-            return beanInstance;
-        }
-
-       Object object =  getCachedObjectFromFactoryBean(beanName);
-        if(object == null){
-            FactoryBean<?> factoryBean = (FactoryBean<?>) beanInstance;
-            object = getObjectFromFactoryBean(factoryBean, beanName);
-        }
-        return object;
-    }
-
-    protected abstract BeanDefinition getBeanDefinition(String beanName) throws BeansException;
-
-    protected abstract Object createBean(String beanName, BeanDefinition beanDefinition, Object[] args) throws BeansException;
-
-
-    @Override
     public String resolveEmbeddedValue(String value) {
-       String result = value;
+        String result = value;
         for (StringValueResolver resolver : this.embeddedValueResolvers) {
             result = resolver.resolveStringValue(result);
         }
         return result;
     }
 
-    public ClassLoader getBeanClassLoader() {
-        return beanClassLoader;
+    /**
+     * Return the list of BeanPostProcessors that will get applied
+     * to beans created with this factory.
+     */
+    public List<BeanPostProcessor> getBeanPostProcessors() {
+        return this.beanPostProcessors;
     }
 
-    public List<BeanPostProcessor> getBeanPostProcessors() {
-        return beanPostProcessors;
+    public ClassLoader getBeanClassLoader() {
+        return this.beanClassLoader;
     }
+
 }

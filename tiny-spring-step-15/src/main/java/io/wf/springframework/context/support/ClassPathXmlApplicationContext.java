@@ -1,14 +1,21 @@
 package io.wf.springframework.context.support;
 
 import io.wf.springframework.beans.BeansException;
-import io.wf.springframework.core.io.Resource;
 
 /**
- * ClassPathXmlApplicationContext
+ * Standalone XML application context, taking the context definition files
+ * from the class path, interpreting plain paths as class path resource names
+ * that include the package path (e.g. "mypackage/myresource.txt"). Useful for
+ * test harnesses as well as for application contexts embedded within JARs.
+ * <p>
+ * XML 文件应用上下文
+ * <p>
  *
- * @author Ts
- * @version 1.0.0
- * @date 2024/5/20 3:24 PM
+ *
+ *
+ *
+ *
+ * 
  */
 public class ClassPathXmlApplicationContext extends AbstractXmlApplicationContext {
 
@@ -20,26 +27,26 @@ public class ClassPathXmlApplicationContext extends AbstractXmlApplicationContex
     /**
      * 从 XML 中加载 BeanDefinition，并刷新上下文
      *
-     * @param configLocation
+     * @param configLocations
      * @throws BeansException
      */
-    public ClassPathXmlApplicationContext(String configLocation) throws BeansException {
-        this(new String[]{configLocation});
+    public ClassPathXmlApplicationContext(String configLocations) throws BeansException {
+        this(new String[]{configLocations});
     }
 
     /**
      * 从 XML 中加载 BeanDefinition，并刷新上下文
-     *
      * @param configLocations
      * @throws BeansException
      */
-    public ClassPathXmlApplicationContext(String[] configLocations) {
+    public ClassPathXmlApplicationContext(String[] configLocations) throws BeansException {
         this.configLocations = configLocations;
         refresh();
     }
 
     @Override
-    public String[] getConfigLocations() {
+    protected String[] getConfigLocations() {
         return configLocations;
     }
+
 }

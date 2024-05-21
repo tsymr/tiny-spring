@@ -4,13 +4,17 @@ import io.wf.springframework.context.ApplicationContext;
 import io.wf.springframework.context.ApplicationEvent;
 
 /**
- * ApplicationContextEvent
+ * Base class for events raised for an <code>ApplicationContext</code>.
  *
- * @author Ts
- * @version 1.0.0
- * @date 2024/5/20 2:38 PM
+ *
+ *
+ *
+ *
+ *
+ * 
  */
-public class ApplicationContextEvent  extends ApplicationEvent {
+public class ApplicationContextEvent extends ApplicationEvent {
+
     /**
      * Constructs a prototypical Event.
      *
@@ -22,9 +26,10 @@ public class ApplicationContextEvent  extends ApplicationEvent {
     }
 
     /**
-     * 获取引发事件的 ApplicationContext
+     * Get the <code>ApplicationContext</code> that the event was raised for.
      */
     public final ApplicationContext getApplicationContext() {
         return (ApplicationContext) getSource();
     }
+
 }

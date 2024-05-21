@@ -8,11 +8,14 @@ import net.sf.cglib.proxy.MethodProxy;
 import java.lang.reflect.Method;
 
 /**
- * Cglib2AopProxy
+ * CGLIB2-based {@link AopProxy} implementation for the Spring AOP framework.
  *
- * @author Ts
- * @version 1.0.0
- * @date 2024/5/20 10:59 AM
+ * <p><i>Requires CGLIB 2.1+ on the classpath.</i>.
+ * As of Spring 2.0, earlier CGLIB versions are not supported anymore.
+ *
+ * <p>Objects of this type should be obtained through proxy factories,
+ * configured by an AdvisedSupport object. This class is internal
+ * to Spring's AOP framework and need not be used directly by client code.
  */
 public class Cglib2AopProxy implements AopProxy {
 
@@ -21,7 +24,6 @@ public class Cglib2AopProxy implements AopProxy {
     public Cglib2AopProxy(AdvisedSupport advised) {
         this.advised = advised;
     }
-
 
     @Override
     public Object getProxy() {
@@ -33,6 +35,7 @@ public class Cglib2AopProxy implements AopProxy {
     }
 
     private static class DynamicAdvisedInterceptor implements MethodInterceptor {
+
         private final AdvisedSupport advised;
 
         public DynamicAdvisedInterceptor(AdvisedSupport advised) {
@@ -40,17 +43,16 @@ public class Cglib2AopProxy implements AopProxy {
         }
 
         @Override
-        public Object intercept(Object obj, Method method, Object[] args, MethodProxy proxy) throws Throwable {
-            CglibMethodInvocation methodInvocation = new CglibMethodInvocation(advised.getTargetSource().getTarget(), method, args, proxy);
-            if(advised.getMethodMatcher().matches(method, advised.getTargetSource().getTarget().getClass())){
+        public Object intercept(Object o, Method method, Object[] objects, MethodProxy methodProxy) throws Throwable {
+            CglibMethodInvocation methodInvocation = new CglibMethodInvocation(advised.getTargetSource().getTarget(), method, objects, methodProxy);
+            if (advised.getMethodMatcher().matches(method, advised.getTargetSource().getTarget().getClass())) {
                 return advised.getMethodInterceptor().invoke(methodInvocation);
             }
             return methodInvocation.proceed();
         }
     }
 
-
-    private static class CglibMethodInvocation extends ReflectiveMethodInvocation{
+    private static class CglibMethodInvocation extends ReflectiveMethodInvocation {
 
         private final MethodProxy methodProxy;
 
@@ -61,7 +63,9 @@ public class Cglib2AopProxy implements AopProxy {
 
         @Override
         public Object proceed() throws Throwable {
-            return this.methodProxy.invokeSuper(this.target, this.arguments);
+            return this.methodProxy.invoke(this.target, this.arguments);
         }
+
     }
+
 }

@@ -1,20 +1,32 @@
 package io.wf.springframework.aop;
 
 /**
- * Pointcut
+ * Core Spring pointcut abstraction.
  *
-* <p>
- * 切入点由{@link ClassFilter}和{@link MethodMatcher}组成。
- * 这些基本术语和切入点本身都可以组合起来构建组合
+ * <p>A pointcut is composed of a {@link ClassFilter} and a {@link MethodMatcher}.
+ * Both these basic terms and a Pointcut itself can be combined to build up combinations
  * <p>
  *
- * @author Ts
- * @version 1.0.0
- * @date 2024/5/20 10:03 AM
+ *
+ *
+ *
+ *
+ * 
  */
 public interface Pointcut {
 
+    /**
+     * Return the ClassFilter for this pointcut.
+     *
+     * @return the ClassFilter (never <code>null</code>)
+     */
     ClassFilter getClassFilter();
 
+    /**
+     * Return the MethodMatcher for this pointcut.
+     *
+     * @return the MethodMatcher (never <code>null</code>)
+     */
     MethodMatcher getMethodMatcher();
+
 }

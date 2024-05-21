@@ -3,11 +3,16 @@ package io.wf.springframework.beans.factory.annotation;
 import java.lang.annotation.*;
 
 /**
- * Qualifier
+ * This annotation may be used on a field or parameter as a qualifier for
+ * candidate beans when autowiring. It may also be used to annotate other
+ * custom annotations that can then in turn be used as qualifiers.
+ * <p>
  *
- * @author Ts
- * @version 1.0.0
- * @date 2024/5/21 10:15 AM
+ *
+ *
+ *
+ *
+ * 
  */
 @Target({ElementType.FIELD, ElementType.METHOD, ElementType.PARAMETER, ElementType.TYPE, ElementType.ANNOTATION_TYPE})
 @Retention(RetentionPolicy.RUNTIME)
@@ -16,4 +21,5 @@ import java.lang.annotation.*;
 public @interface Qualifier {
 
     String value() default "";
+
 }
