@@ -18,7 +18,7 @@ public class ApiTest {
     @Test
     public void test_autoProxy_2() {
         ClassPathXmlApplicationContext applicationContext = new ClassPathXmlApplicationContext("classpath:spring2.xml");
-        IUserService userService = applicationContext.getBean("userService", IUserService.class);
+        io.wf.springframework.test.bean2.IUserService userService = applicationContext.getBean("userService",  io.wf.springframework.test.bean2.IUserService.class);
         System.out.println("测试结果：" + userService.queryUserInfo());
     }
 
