@@ -6,6 +6,7 @@ import io.wf.springframework.beans.factory.config.BeanDefinition;
 import io.wf.springframework.beans.factory.config.BeanPostProcessor;
 import io.wf.springframework.beans.factory.config.ConfigurableBeanFactory;
 import io.wf.springframework.util.ClassUtils;
+import io.wf.springframework.util.StringValueResolver;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -23,14 +24,20 @@ public abstract class AbstractBeanFactory extends FactoryBeanRegistrySupport  im
 
     private final List<BeanPostProcessor> beanPostProcessors = new ArrayList<>();
 
+    /**
+     * String resolvers to apply e.g. to annotation attribute values
+     */
+    private final List<StringValueResolver> embeddedValueResolvers = new ArrayList<>();
+
     @Override
     public void addBeanPostProcessor(BeanPostProcessor beanPostProcessor) {
         this.beanPostProcessors.remove(beanPostProcessor);
         this.beanPostProcessors.add(beanPostProcessor);
     }
 
-    public List<BeanPostProcessor> getBeanPostProcessors() {
-        return beanPostProcessors;
+    @Override
+    public void addEmbeddedValueResolver(StringValueResolver valueResolver) {
+        this.embeddedValueResolvers.add(valueResolver);
     }
 
     @Override
@@ -76,7 +83,21 @@ public abstract class AbstractBeanFactory extends FactoryBeanRegistrySupport  im
 
     protected abstract Object createBean(String beanName, BeanDefinition beanDefinition, Object[] args) throws BeansException;
 
+
+    @Override
+    public String resolveEmbeddedValue(String value) {
+       String result = value;
+        for (StringValueResolver resolver : this.embeddedValueResolvers) {
+            result = resolver.resolveStringValue(result);
+        }
+        return result;
+    }
+
     public ClassLoader getBeanClassLoader() {
         return beanClassLoader;
+    }
+
+    public List<BeanPostProcessor> getBeanPostProcessors() {
+        return beanPostProcessors;
     }
 }

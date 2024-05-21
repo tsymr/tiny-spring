@@ -1,5 +1,7 @@
 package io.wf.springframework.test.bean;
 
+import io.wf.springframework.beans.factory.annotation.Autowired;
+import io.wf.springframework.beans.factory.annotation.Value;
 import io.wf.springframework.stereotype.Component;
 
 import java.util.Random;
@@ -14,7 +16,12 @@ import java.util.Random;
 @Component("userService")
 public class UserService implements IUserService {
 
+    @Value("${token}")
     private String token;
+
+
+    @Autowired
+    private UserDao userDao;
 
     public String queryUserInfo() {
         try {
@@ -22,7 +29,7 @@ public class UserService implements IUserService {
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
-        return "Ts，1001，杭州";
+        return userDao.queryUserName("10001") + "，" + token;
     }
 
     public String register(String userName) {
@@ -36,7 +43,7 @@ public class UserService implements IUserService {
 
     @Override
     public String toString() {
-        return "bean.UserService#token = { " + token + " }";
+        return "UserService#token = { " + token + " }";
     }
 
     public String getToken() {
